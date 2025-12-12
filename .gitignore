@@ -1,0 +1,26 @@
+# General
+node_modules/
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Mobile (Expo)
+.expo/
+dist/
+web-build/
+mobile/node_modules/
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+
+# Backend (NestJS - Future)
+backend/dist/
+backend/node_modules/
