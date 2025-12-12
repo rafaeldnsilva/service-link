@@ -1,0 +1,56 @@
+export const colors = {
+    primary: "#2C097F",
+    primaryLight: "#1d4ed8",
+    backgroundLight: "#f6f6f8",
+    backgroundDark: "#151022",
+    textPrimaryLight: "#1C1C1E",
+    textSecondaryLight: "#8A8A8E",
+    textPrimaryDark: "#FFFFFF",
+    textSecondaryDark: "#A0A0A0",
+    success: "#34C759",
+    error: "#FF3B30",
+    white: "#FFFFFF",
+    black: "#000000",
+    gray: {
+        50: "#f9fafb",
+        100: "#f3f4f6",
+        200: "#e5e7eb",
+        300: "#d1d5db",
+        400: "#9ca3af",
+        500: "#6b7280",
+        600: "#4b5563",
+        700: "#374151",
+        800: "#1f2937",
+        900: "#111827",
+    },
+    slate: {
+        50: "#f8fafc",
+        100: "#f1f5f9",
+        200: "#e2e8f0",
+        300: "#cbd5e1",
+        400: "#94a3b8",
+        500: "#64748b",
+        600: "#475569",
+        700: "#334155",
+        800: "#1e293b",
+        900: "#0f172a",
+        950: "#020617",
+    },
+};
+
+export const spacing = {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    xxl: 48,
+};
+
+export const borderRadius = {
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    full: 9999,
+};
