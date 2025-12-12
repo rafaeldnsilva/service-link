@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ServiceLink - Buscando Prestador</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "primary": "#135bec",
+                    "primary-light": "#eef4ff",
+                    "background-light": "#f8f9fc",
+                    "background-dark": "#101622",
+                },
+                fontFamily: {
+                    "display": ["Inter", "sans-serif"]
+                },
+                keyframes: {
+                    ripple: {
+                        '0%': { transform: 'scale(0.5)', opacity: '0.6', borderWidth: '1px' },
+                        '100%': { transform: 'scale(2.5)', opacity: '0', borderWidth: '0px' },
+                    },
+                    pulseGlow: {
+                        '0%, 100%': { boxShadow: '0 0 0 0 rgba(19, 91, 236, 0.4)' },
+                        '50%': { boxShadow: '0 0 25px 0 rgba(19, 91, 236, 0.2)' },
+                    },
+                    float: {
+                         '0%, 100%': { transform: 'translateY(0)' },
+                        '50%': { transform: 'translateY(-8px)' },
+                    },
+                    popIn: {
+                        '0%': { opacity: '0', transform: 'scale(0.5)' },
+                        '20%': { opacity: '1', transform: 'scale(1.1)' },
+                        '80%': { opacity: '1', transform: 'scale(1)' },
+                        '100%': { opacity: '0', transform: 'scale(0.9)' },
+                    }
+                },
+                animation: {
+                    ripple: 'ripple 3s cubic-bezier(0, 0, 0.2, 1) infinite',
+                    pulseGlow: 'pulseGlow 2s infinite',
+                    float: 'float 3s ease-in-out infinite',
+                    popIn: 'popIn 4s ease-in-out infinite',
+                }
+            },
+        },
+    }
+</script>
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+    .map-bg {
+        background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA6YLj7g_o6upqj2A_m683CgL5GhAcxqRKJzEtVBkq1GUvrpdPp_BLH_PdSejdG_fjeteMO7ZF453EvekMRNJQpsur_zreH8Rs3HiiHjFT7-u95cixbaXUnQw5rpWqvetJav8jRyp2bjKLV3HOTUruwj1Wdh3kIKWFIBD4lgyU7TvqUr9V5EBzInt2ZbHC_NOx3OPI0jph0wbQl6jA8tVzxDBSZaD_RCmx5y-2PWman8C9UQ0-cu_ezTWKrn0k2Kk2YNgSBMmFjrj86"); 
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white overflow-hidden h-screen w-screen relative">
+<div class="absolute inset-0 z-0 map-bg grayscale opacity-30 dark:opacity-20 pointer-events-none"></div>
+<div class="absolute inset-0 z-0 bg-gradient-to-b from-white/90 via-white/50 to-white/95 dark:from-background-dark/90 dark:via-background-dark/60 dark:to-background-dark/95 pointer-events-none"></div>
+<div class="relative z-10 flex flex-col h-full w-full max-w-md mx-auto">
+<div class="flex items-center justify-between p-6">
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur shadow-sm border border-gray-100 dark:border-gray-700 text-slate-700 dark:text-white hover:bg-white dark:hover:bg-gray-700 transition-colors">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<span class="text-xs font-bold tracking-widest uppercase text-slate-400 dark:text-slate-500">ServiceLink</span>
+<div class="w-10"></div> 
+</div>
+<div class="flex-1 flex flex-col items-center justify-center relative w-full overflow-hidden">
+<div class="relative flex items-center justify-center w-[360px] h-[360px]">
+<div class="absolute w-32 h-32 rounded-full border border-primary/40 bg-primary/5 animate-ripple" style="animation-delay: 0s;"></div>
+<div class="absolute w-32 h-32 rounded-full border border-primary/30 bg-primary/5 animate-ripple" style="animation-delay: 1s;"></div>
+<div class="absolute w-32 h-32 rounded-full border border-primary/20 bg-primary/5 animate-ripple" style="animation-delay: 2s;"></div>
+<div class="relative z-20 flex items-center justify-center w-20 h-20 bg-white dark:bg-gray-800 rounded-full shadow-2xl shadow-primary/30 ring-4 ring-primary/10 animate-pulseGlow">
+<div class="w-14 h-14 bg-gradient-to-tr from-primary to-blue-500 rounded-full flex items-center justify-center text-white shadow-inner">
+<span class="material-symbols-outlined text-[32px]">person_search</span>
+</div>
+<div class="absolute -top-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+</div>
+<div class="absolute z-10 top-[15%] right-[20%] animate-popIn" style="animation-delay: 0.2s;">
+<div class="flex items-center justify-center w-11 h-11 bg-white dark:bg-gray-800 rounded-full shadow-lg text-amber-500 border border-gray-100 dark:border-gray-700">
+<span class="material-symbols-outlined text-[22px]">electric_bolt</span>
+</div>
+</div>
+<div class="absolute z-10 bottom-[20%] left-[20%] animate-popIn" style="animation-delay: 1.5s;">
+<div class="flex items-center justify-center w-11 h-11 bg-white dark:bg-gray-800 rounded-full shadow-lg text-blue-500 border border-gray-100 dark:border-gray-700">
+<span class="material-symbols-outlined text-[22px]">plumbing</span>
+</div>
+</div>
+<div class="absolute z-10 bottom-[30%] right-[15%] animate-popIn" style="animation-delay: 2.8s;">
+<div class="flex items-center justify-center w-11 h-11 bg-white dark:bg-gray-800 rounded-full shadow-lg text-emerald-500 border border-gray-100 dark:border-gray-700">
+<span class="material-symbols-outlined text-[22px]">devices</span>
+</div>
+</div>
+<div class="absolute z-10 top-[25%] left-[15%] animate-popIn" style="animation-delay: 3.5s;">
+<div class="flex items-center justify-center w-11 h-11 bg-white dark:bg-gray-800 rounded-full shadow-lg text-slate-500 border border-gray-100 dark:border-gray-700">
+<span class="material-symbols-outlined text-[22px]">construction</span>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full px-6 pb-10 pt-2 flex flex-col items-center text-center z-20">
+<div class="mb-8 space-y-4 max-w-xs mx-auto">
+<h1 class="text-[22px] font-bold text-slate-900 dark:text-white leading-snug">
+                Aguarde, estamos localizando um prestador de serviços para você...
+            </h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-relaxed">
+                Isso pode levar alguns instantes. Estamos verificando a disponibilidade dos profissionais próximos.
+            </p>
+</div>
+<button class="w-full group relative flex items-center justify-center h-14 px-6 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 font-bold rounded-xl hover:bg-red-100 dark:hover:bg-red-900/20 transition-all duration-300 active:scale-[0.98] border border-transparent hover:border-red-100 dark:hover:border-red-800/30">
+<span class="material-symbols-outlined mr-2 text-[20px]">close</span>
+<span>Cancelar Pedido</span>
+</button>
+</div>
+</div>
+
+</body></html>

@@ -12,10 +12,32 @@ export type RootStackParamList = {
     ForgotPassword: undefined;
     EmailVerification: { email: string };
     NewPassword: { token?: string };
-    PasswordSuccess: undefined;
+    // Profile Completion
+    ProfileWelcome: undefined;
+    RoleSelection: undefined;
+    PersonalInfo: undefined;
 
-    // Main App (future)
-    Home: undefined;
+    // Client Screens (Stack)
+    ClientHome: undefined;
+    ClientHistory: undefined;
+    ClientProfileMenu: undefined;
+    ClientInfo: undefined;
+    ClientEditProfile: undefined;
+
+    // Service Flow
+    AllServices: undefined;
+    ProviderProfile: undefined;
+    ServiceConfirmation: undefined;
+    SearchingProvider: undefined;
+    ServiceTracking: undefined;
+
+    // Communication & Review
+    ChatScreen: undefined;
+    RateProvider: undefined;
+
+    // Settings & Account
+    PaymentMethods: undefined;
+    Notifications: undefined;
 };
 
 export type NavigationProp = NativeStackNavigationProp<RootStackParamList>;

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notificações e Alertas</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400,500,700,FILL@0..1" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1193d4",
+            "background-light": "#f6f7f8",
+            "background-dark": "#101c22",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+<div class="sticky top-0 z-10 flex items-center bg-background-light/80 dark:bg-background-dark/80 p-4 pb-3 justify-between backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
+<div class="flex size-10 shrink-0 items-center justify-start">
+<span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back_ios_new</span>
+</div>
+<h1 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Notificações</h1>
+<button class="text-primary dark:text-primary text-base font-medium leading-normal shrink-0 px-2 py-1">Limpar Tudo</button>
+</div>
+<div class="flex flex-col gap-px pt-4">
+<!-- Unread Notification: Service Confirmed -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-800/50 px-4 min-h-[72px] py-3 justify-between">
+<div class="flex items-center gap-4 flex-1">
+<div class="text-white flex items-center justify-center rounded-full bg-primary shrink-0 size-12">
+<span class="material-symbols-outlined">calendar_today</span>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<p class="text-gray-900 dark:text-white text-base font-medium leading-normal line-clamp-2">Seu serviço foi confirmado</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">5m atrás</p>
+</div>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center">
+<div class="size-3 rounded-full bg-primary"></div>
+</div>
+</div>
+</div>
+<!-- Unread Notification: New Message -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-800/50 px-4 min-h-[72px] py-3 justify-between">
+<div class="flex items-center gap-4 flex-1">
+<div class="text-white flex items-center justify-center rounded-full bg-primary shrink-0 size-12">
+<span class="material-symbols-outlined">chat_bubble</span>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<p class="text-gray-900 dark:text-white text-base font-medium leading-normal line-clamp-2">Nova mensagem de João P.</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">2h atrás</p>
+</div>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center">
+<div class="size-3 rounded-full bg-primary"></div>
+</div>
+</div>
+</div>
+<!-- Read Notification: Special Offer -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-800/50 px-4 min-h-[72px] py-3 justify-between">
+<div class="flex items-center gap-4 flex-1">
+<div class="text-gray-600 dark:text-gray-300 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 shrink-0 size-12">
+<span class="material-symbols-outlined">sell</span>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<p class="text-gray-900 dark:text-white text-base font-medium leading-normal line-clamp-2">Oferta especial! 15% de desconto.</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">Ontem</p>
+</div>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center"></div>
+</div>
+</div>
+<!-- Read Notification: Payment Reminder -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-800/50 px-4 min-h-[72px] py-3 justify-between">
+<div class="flex items-center gap-4 flex-1">
+<div class="text-gray-600 dark:text-gray-300 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 shrink-0 size-12">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<p class="text-gray-900 dark:text-white text-base font-medium leading-normal line-clamp-2">Lembrete: Atualize o pagamento</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">2 dias atrás</p>
+</div>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center"></div>
+</div>
+</div>
+<!-- Read Notification: Service Completed -->
+<div class="flex items-center gap-4 bg-white dark:bg-gray-800/50 px-4 min-h-[72px] py-3 justify-between">
+<div class="flex items-center gap-4 flex-1">
+<div class="text-gray-600 dark:text-gray-300 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 shrink-0 size-12">
+<span class="material-symbols-outlined">task_alt</span>
+</div>
+<div class="flex flex-col justify-center flex-1">
+<p class="text-gray-900 dark:text-white text-base font-medium leading-normal line-clamp-2">Serviço de encanamento concluído</p>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal leading-normal">3 dias atrás</p>
+</div>
+</div>
+<div class="shrink-0">
+<div class="flex size-7 items-center justify-center"></div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

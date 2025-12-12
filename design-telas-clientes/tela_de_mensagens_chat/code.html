@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chat Cliente-Prestador</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#2C097F", "background-light": "#f6f6f8", "background-dark": "#151022"}, fontFamily: {display: "Inter"}, borderRadius: {DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px"}}}};</script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-screen w-full flex-col group/design-root overflow-hidden">
+<header class="flex-shrink-0 bg-white dark:bg-slate-800 shadow-md z-20">
+<div class="flex h-20 items-center justify-between px-4 pt-6">
+<button class="flex-shrink-0 p-2">
+<span class="material-symbols-outlined text-gray-800 dark:text-gray-200">arrow_back_ios_new</span>
+</button>
+<div class="flex flex-1 items-center gap-3 text-center">
+<img alt="Foto de perfil de Carlos Silva" class="h-10 w-10 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCbU_A3UqjhLXymOvusQUOA6RKuBHwKUw4wCmOL3jzkG1uOFAp74Xy0Oe_LaFxSnZQRxvHo93RDBuVLLC-Y5hLrGKTx15R98nF22EcdBMAkRcRJfv5fw2cOMj_JcjYGgJLwj6G9FSxVs9e-jNNqxYniHvojAHNtc-3m4jbzDf64gi74u_ZH-Hy2EfasXN2XGi3RpOEN9iJsMUf1ieIjbBzxNC_YwmNdXwPdem6JokI1_8XiRvqs8XOBaGtmOmVivo-ysxPnba-81cW"/>
+<div class="flex flex-col items-start">
+<h1 class="font-display text-lg font-bold text-gray-900 dark:text-white">Carlos Silva</h1>
+<p class="text-sm text-gray-500 dark:text-gray-400">Eletricista</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex-shrink-0 p-2">
+<span class="material-symbols-outlined text-primary dark:text-blue-400">call</span>
+</button>
+<button class="flex-shrink-0 p-2">
+<span class="material-symbols-outlined text-gray-800 dark:text-gray-200">more_vert</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto px-4 pt-6 pb-2">
+<div class="flex flex-col gap-4">
+<div class="flex items-start gap-3">
+<img alt="Foto de perfil de Carlos Silva" class="h-8 w-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCbU_A3UqjhLXymOvusQUOA6RKuBHwKUw4wCmOL3jzkG1uOFAp74Xy0Oe_LaFxSnZQRxvHo93RDBuVLLC-Y5hLrGKTx15R98nF22EcdBMAkRcRJfv5fw2cOMj_JcjYGgJLwj6G9FSxVs9e-jNNqxYniHvojAHNtc-3m4jbzDf64gi74u_ZH-Hy2EfasXN2XGi3RpOEN9iJsMUf1ieIjbBzxNC_YwmNdXwPdem6JokI1_8XiRvqs8XOBaGtmOmVivo-ysxPnba-81cW"/>
+<div class="flex flex-col items-start">
+<div class="max-w-xs rounded-b-lg rounded-tr-lg bg-white dark:bg-slate-700 p-3 shadow-sm">
+<p class="text-base text-gray-800 dark:text-gray-200">Olá! Vi que você precisa de um eletricista. Como posso ajudar?</p>
+</div>
+<span class="mt-1 text-xs text-gray-400 dark:text-gray-500">10:00 AM</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="max-w-xs rounded-b-lg rounded-tl-lg bg-primary/20 dark:bg-primary/40 p-3">
+<p class="text-base text-gray-900 dark:text-white">Oi Carlos, tudo bem? A tomada da minha sala parou de funcionar. Você consegue dar uma olhada hoje?</p>
+</div>
+<span class="mt-1 text-xs text-gray-400 dark:text-gray-500">10:01 AM</span>
+</div>
+<div class="flex items-start gap-3">
+<img alt="Foto de perfil de Carlos Silva" class="h-8 w-8 rounded-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCbU_A3UqjhLXymOvusQUOA6RKuBHwKUw4wCmOL3jzkG1uOFAp74Xy0Oe_LaFxSnZQRxvHo93RDBuVLLC-Y5hLrGKTx15R98nF22EcdBMAkRcRJfv5fw2cOMj_JcjYGgJLwj6G9FSxVs9e-jNNqxYniHvojAHNtc-3m4jbzDf64gi74u_ZH-Hy2EfasXN2XGi3RpOEN9iJsMUf1ieIjbBzxNC_YwmNdXwPdem6JokI1_8XiRvqs8XOBaGtmOmVivo-ysxPnba-81cW"/>
+<div class="flex flex-col items-start">
+<div class="max-w-xs rounded-b-lg rounded-tr-lg bg-white dark:bg-slate-700 p-3 shadow-sm">
+<p class="text-base text-gray-800 dark:text-gray-200">Claro, posso ir aí por volta das 14h. Fica bom para você?</p>
+</div>
+<span class="mt-1 text-xs text-gray-400 dark:text-gray-500">10:02 AM</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<div class="max-w-xs rounded-b-lg rounded-tl-lg bg-primary/20 dark:bg-primary/40 p-3">
+<p class="text-base text-gray-900 dark:text-white">Perfeito! Te aguardo então. Obrigado!</p>
+</div>
+<span class="mt-1 text-xs text-gray-400 dark:text-gray-500">10:03 AM</span>
+</div>
+</div>
+</main>
+<footer class="flex-shrink-0 bg-white dark:bg-slate-800/80 backdrop-blur-sm p-2 pb-4 border-t border-gray-200 dark:border-slate-700">
+<div class="flex w-full items-center gap-2">
+<button class="p-2">
+<span class="material-symbols-outlined text-gray-500 dark:text-gray-400 text-2xl">add</span>
+</button>
+<div class="flex flex-1 items-center rounded-full bg-background-light dark:bg-background-dark border border-gray-200 dark:border-slate-700 px-4">
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden border-none bg-transparent py-2.5 text-gray-800 dark:text-gray-200 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-0" placeholder="Digite sua mensagem..." type="text"/>
+</div>
+<button class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary">
+<span class="material-symbols-outlined text-white">send</span>
+</button>
+</div>
+</footer>
+</div>
+</body></html>

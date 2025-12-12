@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Meu Perfil - ServiceLink</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-50 antialiased selection:bg-primary selection:text-white">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-xl">
+<!-- Top App Bar -->
+<header class="flex items-center px-4 py-4 justify-between bg-transparent sticky top-0 z-10 backdrop-blur-md">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full active:bg-slate-200 dark:active:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-white" style="font-size: 24px;">arrow_back</span>
+</button>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">
+                Meu Perfil
+            </h2>
+</header>
+<!-- Profile Header -->
+<section class="flex flex-col items-center pt-2 pb-8 px-6">
+<div class="relative mb-4 group cursor-pointer">
+<div class="h-28 w-28 rounded-full bg-cover bg-center shadow-md ring-4 ring-white dark:ring-slate-800" data-alt="Profile picture of Ana Souza" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC1K3uMu8YYabSpQ0HwT-R-qsiSjPxeq_Rg1_FvFlVm3PKWhRwkG6azA75SGQFaoLRCR83dMHpUcCLE-7_iKlcdgPgl9ZItCeFBdIkzJWJNMR66WZENvbFUzQD0TKe1eNzOHrjFctSMdP9LHioXbdfczqKScxBNNNCatdKHtz8P9nHzIFEe1Ee-tMkxUZ69hwdYd3uynZXu9bhpGEHvu4Ujb6fG2rj-xM0MPtMDQ6w_gC_UhZTpch8_qKmSDsLIcueZGJFdiZjTP82L");'>
+</div>
+<div class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full ring-2 ring-white dark:ring-slate-800 flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-size: 16px;">edit</span>
+</div>
+</div>
+<div class="text-center space-y-1">
+<h1 class="text-slate-900 dark:text-white text-xl font-bold leading-tight">Ana Souza</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">ana.souza@email.com</p>
+</div>
+</section>
+<!-- Menu List Group -->
+<div class="px-4 flex flex-col gap-6 pb-8">
+<!-- Group 1: Main Actions -->
+<div class="flex flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700/50">
+<!-- Item: Minhas Informações -->
+<button class="flex items-center gap-4 px-4 py-4 w-full text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group relative border-b border-slate-100 dark:border-slate-700 last:border-0">
+<div class="flex items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/20 shrink-0 size-10 text-primary">
+<span class="material-symbols-outlined" style="font-size: 22px;">person</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-slate-900 dark:text-white text-base font-medium truncate">Minhas Informações</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500" style="font-size: 20px;">chevron_right</span>
+</button>
+<!-- Item: Histórico de Pedidos -->
+<button class="flex items-center gap-4 px-4 py-4 w-full text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group relative border-b border-slate-100 dark:border-slate-700 last:border-0">
+<div class="flex items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/20 shrink-0 size-10 text-primary">
+<span class="material-symbols-outlined" style="font-size: 22px;">history</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-slate-900 dark:text-white text-base font-medium truncate">Histórico de Pedidos</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500" style="font-size: 20px;">chevron_right</span>
+</button>
+<!-- Item: Métodos de Pagamento -->
+<button class="flex items-center gap-4 px-4 py-4 w-full text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group relative border-b border-slate-100 dark:border-slate-700 last:border-0">
+<div class="flex items-center justify-center rounded-xl bg-primary/10 dark:bg-primary/20 shrink-0 size-10 text-primary">
+<span class="material-symbols-outlined" style="font-size: 22px;">credit_card</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-slate-900 dark:text-white text-base font-medium truncate">Métodos de Pagamento</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500" style="font-size: 20px;">chevron_right</span>
+</button>
+</div>
+<!-- Group 2: Settings & Preferences -->
+<div class="flex flex-col overflow-hidden rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700/50">
+<!-- Item: Notificações -->
+<button class="flex items-center gap-4 px-4 py-4 w-full text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group relative border-b border-slate-100 dark:border-slate-700 last:border-0">
+<div class="flex items-center justify-center rounded-xl bg-orange-500/10 dark:bg-orange-500/20 shrink-0 size-10 text-orange-600 dark:text-orange-400">
+<span class="material-symbols-outlined" style="font-size: 22px;">notifications</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center">
+<p class="text-slate-900 dark:text-white text-base font-medium truncate">Notificações</p>
+<div class="size-2 rounded-full bg-red-500 mr-2"></div>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500" style="font-size: 20px;">chevron_right</span>
+</button>
+<!-- Item: Configurações -->
+<button class="flex items-center gap-4 px-4 py-4 w-full text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors group relative border-b border-slate-100 dark:border-slate-700 last:border-0">
+<div class="flex items-center justify-center rounded-xl bg-slate-500/10 dark:bg-slate-500/20 shrink-0 size-10 text-slate-600 dark:text-slate-400">
+<span class="material-symbols-outlined" style="font-size: 22px;">settings</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-slate-900 dark:text-white text-base font-medium truncate">Configurações</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500" style="font-size: 20px;">chevron_right</span>
+</button>
+</div>
+<!-- Logout Button -->
+<button class="mt-4 flex items-center justify-center gap-2 w-full py-3.5 rounded-xl text-red-600 dark:text-red-400 bg-red-50 hover:bg-red-100 dark:bg-red-900/10 dark:hover:bg-red-900/20 transition-all active:scale-[0.98]">
+<span class="material-symbols-outlined" style="font-size: 20px;">logout</span>
+<span class="text-base font-semibold">Sair</span>
+</button>
+<!-- Version Info -->
+<div class="text-center mt-2">
+<p class="text-xs text-slate-400 dark:text-slate-600">Versão 2.4.0</p>
+</div>
+</div>
+</div>
+</body></html>

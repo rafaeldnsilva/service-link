@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Editar Perfil - ServiceLink</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-50 antialiased selection:bg-primary selection:text-white">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden max-w-md mx-auto bg-background-light dark:bg-background-dark shadow-xl">
+<header class="flex items-center px-4 py-4 justify-between bg-transparent sticky top-0 z-10 backdrop-blur-md">
+<button class="flex size-10 shrink-0 items-center justify-center rounded-full active:bg-slate-200 dark:active:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-white" style="font-size: 24px;">arrow_back</span>
+</button>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">
+                Editar Perfil
+            </h2>
+</header>
+<main class="flex-1 flex flex-col px-6 pt-2 pb-8">
+<section class="flex flex-col items-center mb-8">
+<div class="relative group cursor-pointer">
+<div class="h-32 w-32 rounded-full bg-cover bg-center shadow-lg ring-4 ring-white dark:ring-slate-800" data-alt="Profile picture of Ana Souza" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC1K3uMu8YYabSpQ0HwT-R-qsiSjPxeq_Rg1_FvFlVm3PKWhRwkG6azA75SGQFaoLRCR83dMHpUcCLE-7_iKlcdgPgl9ZItCeFBdIkzJWJNMR66WZENvbFUzQD0TKe1eNzOHrjFctSMdP9LHioXbdfczqKScxBNNNCatdKHtz8P9nHzIFEe1Ee-tMkxUZ69hwdYd3uynZXu9bhpGEHvu4Ujb6fG2rj-xM0MPtMDQ6w_gC_UhZTpch8_qKmSDsLIcueZGJFdiZjTP82L");'>
+</div>
+<div class="absolute bottom-1 right-1 bg-primary text-white p-2.5 rounded-full ring-4 ring-white dark:ring-slate-800 flex items-center justify-center shadow-md transition-transform active:scale-95">
+<span class="material-symbols-outlined" style="font-size: 20px;">photo_camera</span>
+</div>
+</div>
+<p class="mt-3 text-sm font-medium text-primary cursor-pointer hover:underline">Alterar foto de perfil</p>
+</section>
+<form action="#" class="flex flex-col gap-6" onsubmit="event.preventDefault();">
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1" for="fullName">
+                    Nome Completo
+                </label>
+<div class="relative">
+<input class="block w-full rounded-2xl border-0 py-3.5 px-4 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-shadow" id="fullName" placeholder="Seu nome completo" type="text" value="Ana Souza"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1" for="phoneNumber">
+                    Número de Telefone
+                </label>
+<div class="relative">
+<input class="block w-full rounded-2xl border-0 py-3.5 px-4 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-shadow" id="phoneNumber" placeholder="(00) 00000-0000" type="tel"/>
+</div>
+</div>
+<div class="space-y-1.5">
+<label class="text-sm font-semibold text-slate-700 dark:text-slate-300 ml-1" for="address">
+                    Endereço Completo
+                </label>
+<div class="relative">
+<textarea class="block w-full rounded-2xl border-0 py-3.5 px-4 bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 transition-shadow resize-none" id="address" placeholder="Rua, número, bairro..." rows="3"></textarea>
+</div>
+</div>
+</form>
+<div class="mt-auto pt-10 flex flex-col gap-3">
+<button class="w-full flex items-center justify-center py-4 px-4 rounded-2xl bg-primary text-white text-base font-bold shadow-lg shadow-primary/25 hover:bg-blue-600 hover:shadow-primary/40 active:scale-[0.98] transition-all" type="button">
+                Salvar Alterações
+            </button>
+<button class="w-full flex items-center justify-center py-3.5 px-4 rounded-2xl text-slate-500 dark:text-slate-400 text-base font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 active:bg-slate-200 dark:active:bg-slate-700 transition-colors" type="button">
+                Cancelar
+            </button>
+</div>
+</main>
+</div>
+</body></html>

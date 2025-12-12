@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Tela de Confirmação de Serviço</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+<script>tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#2C097F", "background-light": "#f6f6f8", "background-dark": "#151022"}, fontFamily: {display: "Inter"}, borderRadius: {DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px"}}}};</script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display">
+<div class="relative flex h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-hidden">
+<!-- Map Background -->
+<div class="absolute inset-0 h-full w-full">
+<div class="bg-cover bg-center flex h-full w-full flex-col justify-between" data-alt="A map showing a route from a provider to a client's location." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDDk14yiq0byPyt34ooashFDfF4MEoVupDryuKkaGDRs-o80UU8i1HsKfaEb9KGh5d7XPqUglxD3YE_0TMCjWyyO7g1ZuqQybSB01QpUbRFTK81DAIz_URbltk31qLZBkt6byV5dveDPq4ScL7fQo2iMChNdMWAAJwlW46Dvm8Y7Ie9IbN2HrHTqT8icPu9Rrau2SRfxAzgz5SDUobhdnfwIHmjp41WWgTwjyFDiJbSrYgexaY-cI3IcHk2hE_0q4HO7Aawj1J07zV_");'>
+</div>
+</div>
+<!-- Bottom Sheet -->
+<div class="relative flex h-full flex-col justify-end">
+<div class="flex flex-col rounded-t-lg bg-background-light dark:bg-background-dark shadow-2xl">
+<!-- Handle -->
+<div class="flex h-5 w-full items-center justify-center pt-3">
+<div class="h-1 w-9 rounded-full bg-slate-300 dark:bg-slate-600"></div>
+</div>
+<!-- Content -->
+<div class="flex flex-col px-6 pb-6 pt-2">
+<h2 class="text-slate-900 dark:text-white tracking-light text-[28px] font-bold leading-tight text-center pb-2 pt-5 font-display">Instalação Elétrica</h2>
+<h1 class="text-slate-900 dark:text-white tracking-light text-[32px] font-bold leading-tight text-center pb-4 pt-3 font-display">R$ 120,00 - R$ 150,00</h1>
+<div class="my-4 border-t border-slate-200 dark:border-slate-700"></div>
+<!-- ETA -->
+<div class="flex items-center gap-4 bg-transparent min-h-14">
+<div class="text-slate-900 dark:text-white flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 shrink-0 size-12">
+<span class="material-symbols-outlined text-3xl">schedule</span>
+</div>
+<p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate font-display">Chegada em ~15 min</p>
+</div>
+<!-- Payment Method -->
+<div class="flex items-center gap-4 bg-transparent min-h-14 mt-2">
+<div class="text-slate-900 dark:text-white flex items-center justify-center rounded-lg bg-slate-200 dark:bg-slate-700 shrink-0 size-12">
+<span class="material-symbols-outlined text-3xl">credit_card</span>
+</div>
+<div class="flex-1">
+<p class="text-slate-900 dark:text-white text-base font-normal leading-normal truncate font-display">Cartão de Crédito •••• 4242</p>
+</div>
+<button class="text-primary text-base font-semibold leading-normal font-display">Alterar</button>
+</div>
+<!-- CTA Button -->
+<button class="mt-8 flex w-full items-center justify-center rounded-full bg-primary py-4 px-6 text-lg font-bold text-white shadow-lg transition-colors hover:bg-primary/90">
+                        Solicitar Eletricista Agora
+                    </button>
+<!-- Security Note -->
+<div class="flex items-center justify-center gap-2 mt-4">
+<span class="material-symbols-outlined text-sm text-slate-500 dark:text-slate-400">verified_user</span>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal font-display">Profissionais verificados</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

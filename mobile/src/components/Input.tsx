@@ -5,6 +5,7 @@ import {
     Text,
     TouchableOpacity,
     TextInputProps,
+    ViewStyle,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -13,6 +14,7 @@ interface InputProps extends TextInputProps {
     error?: string;
     leftIcon?: keyof typeof MaterialCommunityIcons.glyphMap;
     isPassword?: boolean;
+    containerStyle?: ViewStyle;
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -20,6 +22,7 @@ export const Input: React.FC<InputProps> = ({
     error,
     leftIcon,
     isPassword = false,
+    containerStyle,
     ...props
 }) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -31,11 +34,12 @@ export const Input: React.FC<InputProps> = ({
                 <Text className="text-sm font-medium text-slate-700 mb-1">{label}</Text>
             )}
             <View
+                style={containerStyle}
                 className={`flex-row items-center bg-white border rounded-full shadow-sm ${isFocused
-                        ? "border-primary ring-2 ring-primary/20"
-                        : error
-                            ? "border-error"
-                            : "border-slate-300"
+                    ? "border-primary ring-2 ring-primary/20"
+                    : error
+                        ? "border-error"
+                        : "border-slate-300"
                     }`}
             >
                 {leftIcon && (

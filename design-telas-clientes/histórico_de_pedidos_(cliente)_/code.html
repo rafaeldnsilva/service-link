@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Histórico de Pedidos</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#1152d4",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101622",
+            "status-green": "#34C759",
+            "status-orange": "#FF9500",
+            "status-red": "#FF3B30",
+          },
+          fontFamily: {
+            "display": ["Inter", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "1rem",
+            "xl": "1.5rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      font-size: 24px;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10">
+<div class="text-[#1C1C1E] dark:text-white flex size-12 shrink-0 items-center justify-start -ml-2">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</div>
+<h2 class="text-[#1C1C1E] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Histórico de Pedidos</h2>
+<div class="size-12 shrink-0"></div>
+</div>
+<!-- Search Bar -->
+<div class="px-4 py-3">
+<label class="flex flex-col min-w-40 h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-[#8A8A8E] flex border-none bg-white dark:bg-background-dark/50 items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-[#1C1C1E] dark:text-white focus:outline-0 focus:ring-0 border-none bg-white dark:bg-background-dark/50 focus:border-none h-full placeholder:text-[#8A8A8E] px-4 pl-2 text-base font-normal leading-normal" placeholder="Buscar por serviço ou profissional" value=""/>
+</div>
+</label>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-3 px-4 py-3 overflow-x-auto w-full">
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary pl-4 pr-4">
+<p class="text-white text-sm font-medium leading-normal">Todos</p>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-background-dark/50 pl-4 pr-4">
+<p class="text-[#1C1C1E] dark:text-white text-sm font-medium leading-normal">Concluído</p>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-background-dark/50 pl-4 pr-4">
+<p class="text-[#1C1C1E] dark:text-white text-sm font-medium leading-normal">Em Andamento</p>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-background-dark/50 pl-4 pr-4">
+<p class="text-[#1C1C1E] dark:text-white text-sm font-medium leading-normal">Cancelado</p>
+</button>
+</div>
+<!-- Order History List -->
+<div class="flex flex-col gap-4 px-4 pb-4">
+<!-- Section Header: Este Mês -->
+<h3 class="text-[#1C1C1E] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] pt-4">Este Mês</h3>
+<!-- Order Card 1: Concluído -->
+<div class="flex flex-col gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl shadow-sm">
+<div class="flex items-start gap-4">
+<div class="text-[#1C1C1E] dark:text-white flex items-center justify-center rounded-lg bg-background-light dark:bg-background-dark/80 shrink-0 size-12">
+<span class="material-symbols-outlined">plumbing</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-[#1C1C1E] dark:text-white text-base font-semibold leading-normal">Serviço de Encanamento</p>
+<p class="text-[#8A8A8E] dark:text-gray-400 text-sm font-normal leading-normal">25 de out. de 2023 - João Silva</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-[#8A8A8E] dark:text-gray-400">chevron_right</span>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center justify-center rounded-full bg-status-green/20 px-3 py-1">
+<p class="text-status-green text-xs font-semibold">Concluído</p>
+</div>
+<p class="text-[#1C1C1E] dark:text-white text-sm font-medium leading-normal">Valor Final: R$ 250,00</p>
+</div>
+</div>
+<!-- Order Card 2: Em Andamento -->
+<div class="flex flex-col gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl shadow-sm">
+<div class="flex items-start gap-4">
+<div class="text-[#1C1C1E] dark:text-white flex items-center justify-center rounded-lg bg-background-light dark:bg-background-dark/80 shrink-0 size-12">
+<span class="material-symbols-outlined">lightbulb</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-[#1C1C1E] dark:text-white text-base font-semibold leading-normal">Eletricista</p>
+<p class="text-[#8A8A8E] dark:text-gray-400 text-sm font-normal leading-normal">15 de out. de 2023 - Maria Oliveira</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-[#8A8A8E] dark:text-gray-400">chevron_right</span>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center justify-center rounded-full bg-status-orange/20 px-3 py-1">
+<p class="text-status-orange text-xs font-semibold">Em Andamento</p>
+</div>
+<p class="text-[#1C1C1E] dark:text-white text-sm font-medium leading-normal">Estimativa: R$ 200,00</p>
+</div>
+</div>
+<!-- Section Header: Mês Passado -->
+<h3 class="text-[#1C1C1E] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] pt-4">Mês Passado</h3>
+<!-- Order Card 3: Cancelado -->
+<div class="flex flex-col gap-4 bg-white dark:bg-background-dark/50 p-4 rounded-xl shadow-sm">
+<div class="flex items-start gap-4">
+<div class="text-[#1C1C1E] dark:text-white flex items-center justify-center rounded-lg bg-background-light dark:bg-background-dark/80 shrink-0 size-12">
+<span class="material-symbols-outlined">computer</span>
+</div>
+<div class="flex flex-1 flex-col justify-center">
+<p class="text-[#1C1C1E] dark:text-white text-base font-semibold leading-normal">Técnico de TI</p>
+<p class="text-[#8A8A8E] dark:text-gray-400 text-sm font-normal leading-normal">28 de set. de 2023</p>
+</div>
+<div class="shrink-0">
+<span class="material-symbols-outlined text-[#8A8A8E] dark:text-gray-400">chevron_right</span>
+</div>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center justify-center rounded-full bg-status-red/20 px-3 py-1">
+<p class="text-status-red text-xs font-semibold">Cancelado</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

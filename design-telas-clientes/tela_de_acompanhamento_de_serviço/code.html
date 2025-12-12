@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ServiceLink - Acompanhamento</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom map marker pulse animation */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.33); opacity: 0.8; }
+            80%, 100% { opacity: 0; }
+        }
+        @keyframes pulse-dot {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1); }
+            100% { transform: scale(0.8); }
+        }
+        .animate-pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        .animate-pulse-dot {
+            animation: pulse-dot 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+        }
+        /* Hide scrollbar for cleaner mobile look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased overflow-hidden h-screen w-full relative text-slate-900 dark:text-white">
+<!-- Map Background Layer -->
+<div class="absolute inset-0 z-0 h-full w-full bg-slate-200 dark:bg-slate-800">
+<!-- Placeholder for Map Image -->
+<div class="h-full w-full bg-cover bg-center" data-alt="Interactive map showing city streets and route" data-location="São Paulo, Brazil" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA_FqMmmqV_Lo8DQBltga-_34bijbF8qievCM8tmhR_cs1Sy8Ep-Zy4KUFEgBZwYkn05Mq0rXX83W3p0cW4_q_46311ULWxJ7N8YrPRExqiJC36sLCoiZh_Tcbtone0LNWNuQiJCRRDooz0bd0O2bqIIWxoXrjN2nUpbC4YO2EB6xlQ0JJwLYKTqDDiqZvwrouRHNyPE9fxs1rKnkKIMi2AhcdZwEd0fwHCH4ioAOpF9cS1-YDg1YQhGSGSkB8ynaoA9Pm_rflyzdyj");'>
+</div>
+<!-- Simulated Map Elements Overlay -->
+<div class="absolute inset-0 pointer-events-none">
+<!-- Route Line Simulation (SVG) -->
+<svg class="absolute top-0 left-0 w-full h-full" style="opacity: 0.7;">
+<path d="M 120 180 Q 200 300 180 450 T 250 600" fill="none" stroke="#135bec" stroke-dasharray="10 0" stroke-linecap="round" stroke-width="6"></path>
+</svg>
+<!-- Provider Pin (Moving) -->
+<div class="absolute top-[40%] left-[45%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="relative">
+<div class="absolute -inset-4 bg-primary/30 rounded-full animate-pulse-ring"></div>
+<div class="relative bg-primary text-white p-2 rounded-full shadow-lg z-10 border-2 border-white dark:border-slate-900">
+<span class="material-symbols-outlined text-[20px]">electric_bolt</span>
+</div>
+</div>
+<div class="mt-1 bg-white dark:bg-slate-800 px-2 py-0.5 rounded shadow text-xs font-bold text-slate-800 dark:text-white whitespace-nowrap">
+                    Joana (Eletricista)
+                </div>
+</div>
+<!-- Customer/Destination Pin -->
+<div class="absolute bottom-[35%] right-[25%] -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="text-slate-800 dark:text-white drop-shadow-md">
+<span class="material-symbols-outlined text-[36px] text-red-500 fill-1">location_on</span>
+</div>
+</div>
+</div>
+</div>
+<!-- UI Overlay Layer -->
+<div class="relative z-10 flex flex-col h-full pointer-events-none">
+<!-- Top App Bar (Floating Transparent) -->
+<div class="pt-4 px-4 pb-2 flex items-center justify-between pointer-events-auto">
+<button class="flex items-center justify-center size-10 rounded-full bg-white dark:bg-slate-800 shadow-md text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<button class="flex items-center justify-center size-10 rounded-full bg-white dark:bg-slate-800 shadow-md text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined">help</span>
+</button>
+</div>
+<!-- Spacer to push content to bottom -->
+<div class="flex-1"></div>
+<!-- Floating Bottom Sheet/Card -->
+<div class="w-full pointer-events-auto p-4 pb-6">
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-[0_-4px_24px_rgba(0,0,0,0.1)] overflow-hidden">
+<!-- Status Header -->
+<div class="bg-emerald-50 dark:bg-emerald-900/20 px-4 py-3 border-b border-emerald-100 dark:border-emerald-900/50 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="size-2 rounded-full bg-emerald-500 animate-pulse"></div>
+<span class="text-emerald-700 dark:text-emerald-400 text-sm font-semibold tracking-wide uppercase">Status: A caminho</span>
+</div>
+<span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Atualizado agora</span>
+</div>
+<div class="p-5 flex flex-col gap-5">
+<!-- ETA & Provider Info -->
+<div class="flex items-start justify-between gap-4">
+<div class="flex-1">
+<h2 class="text-3xl font-bold text-slate-900 dark:text-white leading-tight tracking-tight">15 min</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium mt-0.5">Tempo estimado de chegada</p>
+<div class="mt-4 flex items-center gap-3">
+<div class="relative">
+<div class="size-12 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden bg-cover bg-center shadow-inner" data-alt="Profile picture of the service provider" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA6w1svvLaUFjbAB3J5BpP7byNSLuo00XgRwChq_H0s9xNzcz0Z1FEpUKkYO21Qa3KA0j-mEYIGGsZU_v9ZFnid7i0gmAvdnasEPtB02Kqj1zeCc9d8vn9Pb21mxvArbbXuAJMoNDC7dUSy6nEGfcg5zNU2wkjP_d21wQj2q3fkADZQ1uZZ-Y-3HPZjOwhQKk2P26vMyComGvrG7Lzb_vMLZDtVfIrS68bfCJUj1NLONOOCT8Fr85-CNSMXWxTqhkhIjzKw2Lw46AHh");'>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-white dark:bg-slate-800 rounded-full p-0.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px] text-amber-500">star</span>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-slate-900 dark:text-white font-bold text-base">Joana Silva</h3>
+<span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] px-1.5 py-0.5 rounded font-medium border border-slate-200 dark:border-slate-700">4.9</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm">Eletricista Certificada</p>
+<div class="flex items-center gap-1 mt-1 text-slate-400 dark:text-slate-500 text-xs">
+<span class="material-symbols-outlined text-[14px]">local_shipping</span>
+<span>Fiat Fiorino • ABC-1234</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Map Center Button (Small visual cue) -->
+<button class="bg-slate-100 dark:bg-slate-800 p-2 rounded-lg text-primary hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-[20px]">my_location</span>
+</button>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-3">
+<button class="flex items-center justify-center gap-2 w-full h-12 bg-primary hover:bg-blue-700 active:scale-[0.98] transition-all rounded-lg text-white font-bold shadow-lg shadow-blue-500/30">
+<span class="material-symbols-outlined">call</span>
+<span>Ligar para Prestador</span>
+</button>
+<button class="flex items-center justify-center gap-2 w-full h-10 bg-transparent hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-red-600 dark:hover:text-red-400 text-sm font-medium transition-colors rounded-lg">
+                            Cancelar Serviço
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>
