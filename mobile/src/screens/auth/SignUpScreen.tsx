@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
     View,
     Text,
@@ -6,12 +6,33 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     Platform,
+    Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationProp } from "../../types/navigation";
 import { Button, Input } from "../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { supabase } from "../../lib/supabase";
+
+type PasswordStrength = "fraca" | "média" | "forte";
+
+const getPasswordStrength = (pwd: string): PasswordStrength => {
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(pwd)) score++;
+    if (score <= 1) return "fraca";
+    if (score <= 3) return "média";
+    return "forte";
+};
+
+const STRENGTH_COLOR: Record<PasswordStrength, string> = {
+    fraca: "#EF4444",
+    média: "#F97316",
+    forte: "#22C55E",
+};
 
 export const SignUpScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
@@ -22,13 +43,55 @@ export const SignUpScreen: React.FC = () => {
     const [acceptTerms, setAcceptTerms] = useState(false);
     const [loading, setLoading] = useState(false);
 
+    const passwordStrength = useMemo(() => getPasswordStrength(password), [password]);
+    const strengthWidth = passwordStrength === "fraca" ? "33%" : passwordStrength === "média" ? "66%" : "100%";
+
+    const passwordValid =
+        password.length >= 8 &&
+        /[A-Z]/.test(password) &&
+        /\d/.test(password);
+
     const handleSignUp = async () => {
+        if (!name || !email || !password || !confirmPassword) {
+            Alert.alert("Campos obrigatórios", "Por favor, preencha todos os campos.");
+            return;
+        }
+
+        if (!passwordValid) {
+            Alert.alert("Senha fraca", "Use ao menos 8 caracteres, uma letra maiúscula e um número.");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            Alert.alert("Senhas diferentes", "As senhas digitadas não coincidem.");
+            return;
+        }
+
+        if (!acceptTerms) {
+            Alert.alert("Termos de uso", "Você precisa aceitar os Termos de Serviço para continuar.");
+            return;
+        }
+
         setLoading(true);
-        // TODO: Implement actual signup logic
-        setTimeout(() => {
+        try {
+            const { error } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: { full_name: name },
+                },
+            });
+
+            if (error) {
+                Alert.alert("Erro ao criar conta", error.message);
+            } else {
+                navigation.navigate("RoleSelection");
+            }
+        } catch {
+            Alert.alert("Erro", "Ocorreu um erro inesperado. Tente novamente.");
+        } finally {
             setLoading(false);
-            navigation.navigate("EmailVerification", { email });
-        }, 1000);
+        }
     };
 
     return (
@@ -97,6 +160,27 @@ export const SignUpScreen: React.FC = () => {
                                 leftIcon="lock-outline"
                             />
 
+                            {/* Password strength indicator */}
+                            {password.length > 0 && (
+                                <View className="mb-1">
+                                    <View className="flex-row items-center justify-between mb-1">
+                                        <Text className="text-xs text-slate-500">Força da senha</Text>
+                                        <Text className="text-xs font-bold capitalize" style={{ color: STRENGTH_COLOR[passwordStrength] }}>
+                                            {passwordStrength}
+                                        </Text>
+                                    </View>
+                                    <View className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                        <View
+                                            className="h-full rounded-full"
+                                            style={{ width: strengthWidth, backgroundColor: STRENGTH_COLOR[passwordStrength] }}
+                                        />
+                                    </View>
+                                    <Text className="text-xs text-slate-400 mt-1">
+                                        Use 8+ caracteres, uma maiúscula e um número
+                                    </Text>
+                                </View>
+                            )}
+
                             <Input
                                 label="Confirmar Senha"
                                 placeholder="Confirme sua senha"
@@ -114,8 +198,8 @@ export const SignUpScreen: React.FC = () => {
                             >
                                 <View
                                     className={`w-6 h-6 rounded border-2 items-center justify-center ${acceptTerms
-                                            ? "bg-primary border-primary"
-                                            : "bg-white border-slate-300"
+                                        ? "bg-primary border-primary"
+                                        : "bg-white border-slate-300"
                                         }`}
                                 >
                                     {acceptTerms && (

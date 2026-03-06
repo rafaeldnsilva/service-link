@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Image } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationProp } from "../../types/navigation";
 import { Button, Input } from "../../components";
 import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "../../theme/colors";
+import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../context/AuthContext";
 
 export const PersonalInfoScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
@@ -14,11 +16,53 @@ export const PersonalInfoScreen: React.FC = () => {
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
 
-    const handleSave = () => {
-        // Here we would validate and save to backend
-        console.log({ fullName, phone, address });
-        // Navigate to main app
-        navigation.navigate("ClientMain" as any); // Type assertion needed or update NavigationProp generic
+    const { user, isProvider } = useAuth(); // Import useAuth
+    // Also need 'profile' if we want to pre-fill data, but for now just saving.
+
+    const handleSave = async () => {
+        if (!user) return;
+
+        // Simple validation
+        if (!fullName || !phone) {
+            Alert.alert("Campos obrigatórios", "Por favor, preencha nome e telefone.");
+            return;
+        }
+
+        try {
+            const { error } = await supabase
+                .from('profiles')
+                .update({
+                    full_name: fullName,
+                    phone: phone,
+                    address: address,
+                    // bio: bio // Add bio state if needed later
+                })
+                .eq('id', user.id);
+
+            if (error) {
+                console.error("Error updating profile:", error);
+                Alert.alert("Erro", "Não foi possível salvar o perfil. Tente novamente.");
+            } else {
+                // Navigate based on role
+                // Since this is "PersonalInfo", it assumes onboarding is done or almost done.
+                // If provider -> ProviderMain (stub)
+                // If client -> ClientHome
+                if (isProvider) {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: "ProviderMain" }],
+                    });
+                } else {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: "ClientMain" }],
+                    });
+                }
+            }
+        } catch (e) {
+            console.error(e);
+            Alert.alert("Erro", "Ocorreu um erro inesperado. Tente novamente.");
+        }
     };
 
     return (

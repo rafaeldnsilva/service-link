@@ -3,7 +3,7 @@ export * from "./ClientHistoryScreen";
 export * from "./ClientProfileScreen";
 export * from "./ClientInfoScreen";
 export * from "./ClientEditProfileScreen";
-export * from "./AllServicesScreen";
+export * from "./ClientAllServicesScreen";
 export * from "./ProviderProfileScreen";
 export * from "./ServiceConfirmationScreen";
 export * from "./SearchingProviderScreen";

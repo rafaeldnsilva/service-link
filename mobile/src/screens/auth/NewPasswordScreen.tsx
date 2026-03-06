@@ -6,6 +6,7 @@ import {
     KeyboardAvoidingView,
     Platform,
     ScrollView,
+    Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -13,6 +14,7 @@ import { NavigationProp } from "../../types/navigation";
 import { Button, Input } from "../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { colors } from "../../theme/colors";
+import { supabase } from "../../lib/supabase";
 
 interface PasswordRequirement {
     label: string;
@@ -47,11 +49,18 @@ export const NewPasswordScreen: React.FC = () => {
         if (!allRequirementsMet || !passwordsMatch) return;
 
         setLoading(true);
-        // TODO: Implement actual password reset logic
-        setTimeout(() => {
+        try {
+            const { error } = await supabase.auth.updateUser({ password });
+            if (error) {
+                Alert.alert("Erro", error.message);
+            } else {
+                navigation.navigate("PasswordSuccess");
+            }
+        } catch {
+            Alert.alert("Erro", "Não foi possível redefinir a senha. Tente novamente.");
+        } finally {
             setLoading(false);
-            navigation.navigate("PasswordSuccess");
-        }, 1000);
+        }
     };
 
     return (

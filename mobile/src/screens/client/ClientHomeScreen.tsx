@@ -1,122 +1,69 @@
-import React from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, Dimensions, StatusBar } from "react-native";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Dimensions, StatusBar } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import * as Location from "expo-location";
 import { colors } from "../../theme/colors";
+import { mapCustomStyle } from "../../theme/mapStyles";
+import { SERVICE_CATEGORIES } from "../../constants/categories";
 import { NavigationProp } from "../../types/navigation";
+import { useAuth } from "../../context/AuthContext";
+import { serviceService } from "../../services/supabaseService";
 
 const { width, height } = Dimensions.get("window");
 
-// Silver/Minimal Map Style
-const mapCustomStyle = [
-    {
-        "elementType": "geometry",
-        "stylers": [{ "color": "#f5f5f5" }]
-    },
-    {
-        "elementType": "labels.icon",
-        "stylers": [{ "visibility": "off" }]
-    },
-    {
-        "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#616161" }]
-    },
-    {
-        "elementType": "labels.text.stroke",
-        "stylers": [{ "color": "#f5f5f5" }]
-    },
-    {
-        "featureType": "administrative.land_parcel",
-        "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#bdbdbd" }]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "geometry",
-        "stylers": [{ "color": "#eeeeee" }]
-    },
-    {
-        "featureType": "poi",
-        "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#757575" }]
-    },
-    {
-        "featureType": "poi.park",
-        "elementType": "geometry",
-        "stylers": [{ "color": "#e5e5e5" }]
-    },
-    {
-        "featureType": "poi.park",
-        "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#9e9e9e" }]
-    },
-    {
-        "featureType": "road",
-        "elementType": "geometry",
-        "stylers": [{ "color": "#ffffff" }]
-    },
-    {
-        "featureType": "road.arterial",
-        "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#757575" }]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "geometry",
-        "stylers": [{ "color": "#dadada" }]
-    },
-    {
-        "featureType": "road.highway",
-        "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#616161" }]
-    },
-    {
-        "featureType": "road.local",
-        "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#9e9e9e" }]
-    },
-    {
-        "featureType": "transit.line",
-        "elementType": "geometry",
-        "stylers": [{ "color": "#e5e5e5" }]
-    },
-    {
-        "featureType": "transit.station",
-        "elementType": "geometry",
-        "stylers": [{ "color": "#eeeeee" }]
-    },
-    {
-        "featureType": "water",
-        "elementType": "geometry",
-        "stylers": [{ "color": "#c9c9c9" }]
-    },
-    {
-        "featureType": "water",
-        "elementType": "labels.text.fill",
-        "stylers": [{ "color": "#9e9e9e" }]
-    }
-];
-
-const CATEGORIES = [
-    { id: 1, name: "Eletricista", icon: "bolt" as const },
-    { id: 2, name: "TI & Redes", icon: "laptop" as const },
-    { id: 3, name: "Encanador", icon: "faucet" as const, iconSet: "FontAwesome5" }, // Using FontAwesome5 for specific icons if needed, or MaterialIcons mapping
-    { id: 4, name: "Limpeza", icon: "cleaning-services" as const },
-    { id: 5, name: "Montador", icon: "handyman" as const },
-    { id: 6, name: "Pintor", icon: "format-paint" as const },
-];
-
-const PROVIDERS = [
-    { id: 1, lat: -23.550520, lng: -46.633308, type: "bolt" },
-    { id: 2, lat: -23.552520, lng: -46.635308, type: "laptop" },
-    { id: 3, lat: -23.548520, lng: -46.638308, type: "cleaning-services" },
-    { id: 4, lat: -23.555520, lng: -46.630308, type: "handyman" },
-];
+const DEFAULT_REGION = {
+    latitude: -23.550520,
+    longitude: -46.633308,
+    latitudeDelta: 0.015,
+    longitudeDelta: 0.0121,
+};
 
 export const ClientHomeScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
+    const { profile } = useAuth();
+    const [searchQuery, setSearchQuery] = useState("");
+    const [region, setRegion] = useState(DEFAULT_REGION);
+    const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    const initials = (profile?.full_name ?? "U")
+        .split(" ")
+        .slice(0, 2)
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase();
+
+    // Request location on mount
+    useEffect(() => {
+        (async () => {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== "granted") return;
+            const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+            setRegion({
+                latitude: loc.coords.latitude,
+                longitude: loc.coords.longitude,
+                latitudeDelta: 0.015,
+                longitudeDelta: 0.0121,
+            });
+        })();
+    }, []);
+
+    // Debounced search — navigate to AllServices with query
+    const handleSearchChange = useCallback((text: string) => {
+        setSearchQuery(text);
+        if (debounceRef.current) clearTimeout(debounceRef.current);
+        debounceRef.current = setTimeout(() => {
+            if (text.trim().length > 1) {
+                navigation.navigate("AllServices");
+            }
+        }, 300);
+    }, [navigation]);
+
+    const handleSearchSubmit = () => {
+        navigation.navigate("AllServices");
+    };
 
     return (
         <View className="flex-1 bg-white">
@@ -124,35 +71,13 @@ export const ClientHomeScreen: React.FC = () => {
 
             {/* 1. Background Map */}
             <MapView
-                provider={PROVIDER_GOOGLE} // Requires setup, fallback to default if issue
+                provider={PROVIDER_GOOGLE}
                 style={{ width: width, height: height }}
                 customMapStyle={mapCustomStyle}
-                initialRegion={{
-                    latitude: -23.550520,
-                    longitude: -46.633308,
-                    latitudeDelta: 0.015,
-                    longitudeDelta: 0.0121,
-                }}
-            >
-                {/* User Location */}
-                <Marker coordinate={{ latitude: -23.550520, longitude: -46.633308 }}>
-                    <View className="w-6 h-6 bg-blue-500 rounded-full border-2 border-white items-center justify-center shadow-md">
-                        <View className="w-full h-full rounded-full border-4 border-blue-200/50" />
-                    </View>
-                </Marker>
-
-                {/* Service Providers */}
-                {PROVIDERS.map((provider) => (
-                    <Marker
-                        key={provider.id}
-                        coordinate={{ latitude: provider.lat, longitude: provider.lng }}
-                    >
-                        <View className="bg-white p-2 rounded-full shadow-md items-center justify-center w-10 h-10">
-                            <MaterialIcons name={provider.type as any} size={20} color={colors.primary} />
-                        </View>
-                    </Marker>
-                ))}
-            </MapView>
+                region={region}
+                showsUserLocation
+                showsMyLocationButton={false}
+            />
 
             {/* 2. Floating Header */}
             <SafeAreaView className="absolute top-0 w-full px-5 pt-4">
@@ -162,16 +87,16 @@ export const ClientHomeScreen: React.FC = () => {
                         placeholder="O que você precisa hoje?"
                         placeholderTextColor="#9CA3AF"
                         className="flex-1 text-base text-gray-800 font-medium h-full"
+                        value={searchQuery}
+                        onChangeText={handleSearchChange}
+                        onSubmitEditing={handleSearchSubmit}
+                        returnKeyType="search"
                     />
                     <TouchableOpacity
                         onPress={() => navigation.navigate("ClientProfileMenu")}
-                        className="w-10 h-10 rounded-full bg-[#fdf8f6] items-center justify-center border border-orange-100"
+                        className="w-10 h-10 rounded-full bg-primary items-center justify-center"
                     >
-                        {/* Avatar Placeholder */}
-                        <Image
-                            source={{ uri: "https://i.pravatar.cc/300?img=5" }}
-                            className="w-full h-full rounded-full"
-                        />
+                        <Text className="text-white font-bold text-sm">{initials}</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>
@@ -184,7 +109,7 @@ export const ClientHomeScreen: React.FC = () => {
                 <Text className="text-[19px] font-bold text-gray-900 mb-5 ml-1">Categorias Populares</Text>
 
                 <View className="flex-row flex-wrap gap-3">
-                    {CATEGORIES.map((cat) => (
+                    {SERVICE_CATEGORIES.map((cat) => (
                         <TouchableOpacity
                             key={cat.id}
                             className="flex-row items-center bg-white border border-gray-100 rounded-2xl px-4 py-3.5 shadow-sm active:bg-gray-50 mb-1"

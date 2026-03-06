@@ -5,12 +5,14 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
     Platform,
+    Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationProp } from "../../types/navigation";
 import { Button, Input } from "../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { supabase } from "../../lib/supabase";
 
 export const ForgotPasswordScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
@@ -18,12 +20,24 @@ export const ForgotPasswordScreen: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
     const handleSendLink = async () => {
+        if (!email.trim()) {
+            Alert.alert("Email obrigatório", "Por favor, insira seu email.");
+            return;
+        }
+
         setLoading(true);
-        // TODO: Implement actual password reset logic
-        setTimeout(() => {
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email.trim());
+            if (error) {
+                Alert.alert("Erro", error.message);
+            } else {
+                navigation.navigate("EmailVerification", { email: email.trim() });
+            }
+        } catch (e) {
+            Alert.alert("Erro", "Não foi possível enviar o email. Tente novamente.");
+        } finally {
             setLoading(false);
-            navigation.navigate("EmailVerification", { email });
-        }, 1000);
+        }
     };
 
     return (

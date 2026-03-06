@@ -1,25 +1,49 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, StatusBar } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { colors } from "../../theme/colors";
-import { NavigationProp } from "../../types/navigation";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
+import { NavigationProp, RootStackParamList } from "../../types/navigation";
+import { useAuth } from "../../context/AuthContext";
+import { reviewService } from "../../services/supabaseService";
+
+type RouteProps = RouteProp<RootStackParamList, "RateProvider">;
 
 export const RateProviderScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
-    const [rating, setRating] = useState(4); // Default to 4 stars as shown in design
-    const [comment, setComment] = useState("");
+    const route = useRoute<RouteProps>();
+    const { bookingId, providerId } = route.params;
+    const { user } = useAuth();
 
-    const handleSubmit = () => {
-        console.log("Rating:", rating, "Comment:", comment);
-        navigation.goBack();
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState("");
+    const [submitting, setSubmitting] = useState(false);
+
+    const handleSubmit = async () => {
+        if (!user || rating === 0) return;
+
+        setSubmitting(true);
+        try {
+            await reviewService.createReview({
+                booking_id: bookingId,
+                provider_id: providerId,
+                reviewer_id: user.id,
+                rating,
+                comment: comment.trim() || undefined,
+            });
+            Alert.alert("Obrigado!", "Sua avaliação foi enviada com sucesso.", [
+                { text: "OK", onPress: () => navigation.goBack() },
+            ]);
+        } catch (error) {
+            console.error("Error submitting review:", error);
+            Alert.alert("Erro", "Não foi possível enviar a avaliação. Tente novamente.");
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
         <SafeAreaView className="flex-1 bg-[#F6F7F8]">
-            <StatusBar barStyle="dark-content" backgroundColor="#F6F7F8" />
-
             {/* Header */}
             <View className="flex-row items-center justify-between px-4 py-2">
                 <TouchableOpacity
@@ -36,21 +60,12 @@ export const RateProviderScreen: React.FC = () => {
                 contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 100, flexGrow: 1 }}
                 showsVerticalScrollIndicator={false}
             >
-                {/* Provider Info */}
-                <View className="items-center pt-4 mb-6">
-                    <View className="w-32 h-32 rounded-full bg-slate-200 overflow-hidden shadow-sm mb-4">
-                        <Image
-                            source={{ uri: "https://i.pravatar.cc/300?img=15" }}
-                            className="w-full h-full"
-                        />
-                    </View>
-                    <Text className="text-[22px] font-bold text-[#111618] text-center">João da Silva</Text>
-                    <Text className="text-base text-slate-500 text-center">Eletricista</Text>
-                </View>
-
                 {/* Rating Question */}
-                <Text className="text-2xl font-bold text-[#111618] text-center pb-3 pt-8">
+                <Text className="text-2xl font-bold text-[#111618] text-center pb-3 pt-12">
                     Como foi sua experiência?
+                </Text>
+                <Text className="text-[14px] text-slate-500 text-center mb-6">
+                    Sua avaliação ajuda outros clientes a escolherem os melhores prestadores.
                 </Text>
 
                 {/* Star Rating */}
@@ -64,17 +79,23 @@ export const RateProviderScreen: React.FC = () => {
                         >
                             <MaterialIcons
                                 name="star"
-                                size={40}
+                                size={44}
                                 color={star <= rating ? "#FACC15" : "#CBD5E1"}
                             />
                         </TouchableOpacity>
                     ))}
                 </View>
 
+                {rating > 0 && (
+                    <Text className="text-center text-[15px] font-semibold text-slate-600 mb-6">
+                        {["", "Muito ruim", "Ruim", "Regular", "Bom", "Excelente!"][rating]}
+                    </Text>
+                )}
+
                 {/* Comment Section */}
-                <View className="pt-6">
+                <View className="pt-4">
                     <Text className="text-base font-medium text-[#111618] pb-2">
-                        Deixe seu Comentário
+                        Deixe seu comentário (opcional)
                     </Text>
                     <TextInput
                         placeholder="Descreva sua experiência com o serviço..."
@@ -93,11 +114,14 @@ export const RateProviderScreen: React.FC = () => {
             <View className="absolute bottom-0 left-0 right-0 bg-[#F6F7F8] p-4 pb-6 shadow-lg">
                 <TouchableOpacity
                     onPress={handleSubmit}
-                    disabled={rating === 0}
-                    className={`w-full py-4 rounded-xl items-center justify-center ${rating === 0 ? "bg-slate-300" : "bg-[#1193d4]"
-                        }`}
+                    disabled={rating === 0 || submitting}
+                    className={`w-full py-4 rounded-xl items-center justify-center ${rating === 0 || submitting ? "bg-slate-300" : "bg-primary"}`}
                 >
-                    <Text className="text-white font-bold text-base">Enviar Avaliação</Text>
+                    {submitting ? (
+                        <ActivityIndicator color="white" />
+                    ) : (
+                        <Text className="text-white font-bold text-base">Enviar Avaliação</Text>
+                    )}
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

@@ -38,9 +38,9 @@ export const SearchingProviderScreen: React.FC = () => {
             ])
         ).start();
 
-        // Auto navigate to tracking after 3 seconds (simulating finding a provider)
+        // Auto navigate to tracking after 5 seconds (simulating finding a provider)
         const timeout = setTimeout(() => {
-            navigation.navigate("ServiceTracking");
+            navigation.navigate("ServiceTracking", {});
         }, 5000);
 
         return () => clearTimeout(timeout);

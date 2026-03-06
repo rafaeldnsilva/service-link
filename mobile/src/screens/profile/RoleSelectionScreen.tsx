@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { NavigationProp } from "../../types/navigation";
 import { Button } from "../../components";
 import { MaterialIcons } from "@expo/vector-icons";
 import { colors } from "../../theme/colors";
+import { supabase } from "../../lib/supabase";
+import { useAuth } from "../../context/AuthContext";
 
 type RoleType = "client" | "provider" | null;
 
@@ -13,8 +15,30 @@ export const RoleSelectionScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
     const [selectedRole, setSelectedRole] = useState<RoleType>(null);
 
-    const handleContinue = () => {
-        if (selectedRole) {
+    const { user } = useAuth(); // Assuming useAuth is available/exported, need to import it.
+    // If useAuth is not available in imports, I need to add it. 
+    // Wait, I haven't imported useAuth in RoleSelectionScreen yet.
+
+    const handleContinue = async () => {
+        if (selectedRole && user) {
+            try {
+                const { error } = await supabase
+                    .from('profiles')
+                    .update({ role: selectedRole })
+                    .eq('id', user.id);
+
+                if (error) {
+                    console.error("Error updating role:", error);
+                    Alert.alert("Erro", "Não foi possível salvar sua função. Tente novamente.");
+                    return;
+                }
+
+                navigation.navigate("PersonalInfo");
+            } catch (e) {
+                console.error("Exception updating role:", e);
+            }
+        } else if (!user) {
+            // Fallback for dev/preview if no user
             navigation.navigate("PersonalInfo");
         }
     };
@@ -88,8 +112,8 @@ const RoleCard: React.FC<{
         onPress={onPress}
         activeOpacity={0.9}
         className={`flex-row items-start p-4 rounded-xl border transition-all ${selected
-                ? "bg-white border-primary"
-                : "bg-white border-transparent"
+            ? "bg-white border-primary"
+            : "bg-white border-transparent"
             }`}
         style={
             selected

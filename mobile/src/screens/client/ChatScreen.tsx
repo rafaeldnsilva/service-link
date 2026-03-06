@@ -1,49 +1,115 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Image, KeyboardAvoidingView, Platform } from "react-native";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import {
+    View, Text, TextInput, TouchableOpacity, FlatList,
+    KeyboardAvoidingView, Platform, ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { colors } from "../../theme/colors";
-import { NavigationProp } from "../../types/navigation";
+import { NavigationProp, RootStackParamList } from "../../types/navigation";
+import { useAuth } from "../../context/AuthContext";
+import { messageService, Message } from "../../services/messageService";
 
-const MESSAGES = [
-    {
-        id: 1,
-        text: "Olá! Vi que você precisa de um eletricista. Como posso ajudar?",
-        sender: "provider",
-        time: "10:00 AM"
-    },
-    {
-        id: 2,
-        text: "Oi Carlos, tudo bem? A tomada da minha sala parou de funcionar. Você consegue dar uma olhada hoje?",
-        sender: "client",
-        time: "10:01 AM"
-    },
-    {
-        id: 3,
-        text: "Claro, posso ir aí por volta das 14h. Fica bom para você?",
-        sender: "provider",
-        time: "10:02 AM"
-    },
-    {
-        id: 4,
-        text: "Perfeito! Te aguardo então. Obrigado!",
-        sender: "client",
-        time: "10:03 AM"
-    },
-];
+type RouteProps = RouteProp<RootStackParamList, "ChatScreen">;
+
+const formatTime = (iso: string) => {
+    const d = new Date(iso);
+    return d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+};
+
+const MessageBubble: React.FC<{ message: Message; isMine: boolean }> = ({ message, isMine }) => {
+    const initials = (message.sender?.full_name ?? "?")
+        .split(" ").slice(0, 2).map(n => n[0]).join("").toUpperCase();
+
+    return (
+        <View className={`flex-row mb-4 ${isMine ? "justify-end" : "justify-start"}`}>
+            {!isMine && (
+                <View className="w-9 h-9 rounded-full bg-purple-100 mr-2 items-center justify-center">
+                    <Text className="text-primary font-bold text-[12px]">{initials}</Text>
+                </View>
+            )}
+            <View style={{ maxWidth: "75%" }}>
+                <View className={`px-4 py-3 rounded-2xl ${isMine ? "bg-primary rounded-tr-sm" : "bg-white rounded-tl-sm border border-slate-200"}`}>
+                    <Text className={`text-[15px] leading-5 ${isMine ? "text-white" : "text-slate-900"}`}>
+                        {message.content}
+                    </Text>
+                </View>
+                <Text className={`text-[11px] text-slate-400 mt-1 ${isMine ? "text-right" : "text-left"}`}>
+                    {formatTime(message.created_at)}
+                </Text>
+            </View>
+        </View>
+    );
+};
 
 export const ChatScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
-    const [message, setMessage] = useState("");
+    const route = useRoute<RouteProps>();
+    const { bookingId } = route.params ?? {};
+    const { user } = useAuth();
 
-    const handleSend = () => {
-        if (message.trim()) {
-            // Handle send message
-            console.log("Send:", message);
-            setMessage("");
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [input, setInput] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [sending, setSending] = useState(false);
+    const listRef = useRef<FlatList>(null);
+
+    useEffect(() => {
+        if (!bookingId) {
+            setLoading(false);
+            return;
+        }
+        loadMessages();
+
+        const unsubscribe = messageService.subscribeToMessages(bookingId, (newMessage) => {
+            setMessages(prev => {
+                const exists = prev.some(m => m.id === newMessage.id);
+                if (exists) return prev;
+                return [...prev, newMessage];
+            });
+        });
+
+        return unsubscribe;
+    }, [bookingId]);
+
+    const loadMessages = async () => {
+        if (!bookingId) return;
+        try {
+            const data = await messageService.getMessages(bookingId);
+            setMessages(data);
+        } catch (error) {
+            console.error("Error loading messages:", error);
+        } finally {
+            setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (messages.length > 0) {
+            setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 100);
+        }
+    }, [messages.length]);
+
+    const handleSend = useCallback(async () => {
+        const text = input.trim();
+        if (!text || !bookingId || !user || sending) return;
+
+        setInput("");
+        setSending(true);
+        try {
+            await messageService.sendMessage(bookingId, user.id, text);
+        } catch (error) {
+            console.error("Error sending message:", error);
+            setInput(text); // restore on failure
+        } finally {
+            setSending(false);
+        }
+    }, [input, bookingId, user, sending]);
+
+    const renderItem = useCallback(({ item }: { item: Message }) => (
+        <MessageBubble message={item} isMine={item.sender_id === user?.id} />
+    ), [user?.id]);
 
     return (
         <SafeAreaView className="flex-1 bg-slate-50" edges={["top"]}>
@@ -52,96 +118,81 @@ export const ChatScreen: React.FC = () => {
                 <TouchableOpacity onPress={() => navigation.goBack()} className="mr-3">
                     <MaterialIcons name="arrow-back" size={26} color={colors.textPrimaryLight} />
                 </TouchableOpacity>
-
-                <View className="flex-row items-center flex-1">
-                    <View className="w-12 h-12 rounded-full bg-[#F5D7C8] items-center justify-center overflow-hidden">
-                        <Image
-                            source={{ uri: "https://i.pravatar.cc/300?img=12" }}
-                            className="w-full h-full"
-                        />
-                    </View>
-                    <View className="ml-3 flex-1">
-                        <Text className="text-[18px] font-bold text-slate-900">Carlos Silva</Text>
-                        <Text className="text-[13px] text-slate-500">Eletricista</Text>
-                    </View>
+                <View className="flex-1">
+                    <Text className="text-[17px] font-bold text-slate-900">Chat</Text>
+                    {bookingId && (
+                        <Text className="text-[12px] text-slate-400">Conversa sobre o pedido</Text>
+                    )}
                 </View>
-
-                <TouchableOpacity className="ml-2 w-10 h-10 items-center justify-center">
-                    <MaterialIcons name="phone" size={26} color={colors.primary} />
-                </TouchableOpacity>
-                <TouchableOpacity className="ml-2 w-10 h-10 items-center justify-center">
-                    <MaterialIcons name="more-vert" size={26} color={colors.textPrimaryLight} />
+                <TouchableOpacity className="w-10 h-10 items-center justify-center">
+                    <MaterialIcons name="more-vert" size={24} color={colors.textPrimaryLight} />
                 </TouchableOpacity>
             </View>
 
             {/* Messages */}
-            <ScrollView
-                contentContainerStyle={{ padding: 16, paddingBottom: 80 }}
-                className="flex-1"
-            >
-                {MESSAGES.map((msg) => (
-                    <View
-                        key={msg.id}
-                        className={`flex-row mb-4 ${msg.sender === "client" ? "justify-end" : "justify-start"}`}
-                    >
-                        {msg.sender === "provider" && (
-                            <View className="w-10 h-10 rounded-full bg-[#F5D7C8] mr-2 items-center justify-center overflow-hidden">
-                                <Image
-                                    source={{ uri: "https://i.pravatar.cc/300?img=12" }}
-                                    className="w-full h-full"
-                                />
-                            </View>
-                        )}
-                        <View className="flex-1 max-w-[75%]">
-                            <View
-                                className={`px-4 py-3 rounded-2xl ${msg.sender === "client"
-                                    ? "bg-purple-100 rounded-tr-sm"
-                                    : "bg-white rounded-tl-sm border border-slate-200"
-                                    }`}
-                            >
-                                <Text className={`text-[15px] leading-5 ${msg.sender === "client" ? "text-slate-900" : "text-slate-900"
-                                    }`}>
-                                    {msg.text}
-                                </Text>
-                            </View>
-                            <Text className={`text-[11px] text-slate-400 mt-1 ${msg.sender === "client" ? "text-right" : "text-left"
-                                }`}>
-                                {msg.time}
+            {loading ? (
+                <View className="flex-1 items-center justify-center">
+                    <ActivityIndicator size="large" color={colors.primary} />
+                </View>
+            ) : !bookingId ? (
+                <View className="flex-1 items-center justify-center p-8">
+                    <MaterialIcons name="chat-bubble-outline" size={64} color="#d4d4d8" />
+                    <Text className="text-slate-500 mt-4 text-center">
+                        Selecione um pedido para conversar com o prestador
+                    </Text>
+                </View>
+            ) : (
+                <FlatList
+                    ref={listRef}
+                    data={messages}
+                    keyExtractor={item => item.id}
+                    renderItem={renderItem}
+                    contentContainerStyle={{ padding: 16, paddingBottom: 20, flexGrow: 1 }}
+                    ListEmptyComponent={
+                        <View className="flex-1 items-center justify-center py-16">
+                            <MaterialIcons name="chat-bubble-outline" size={48} color="#d4d4d8" />
+                            <Text className="text-slate-400 mt-3 text-center">
+                                Nenhuma mensagem ainda.{"\n"}Diga olá!
                             </Text>
                         </View>
-                    </View>
-                ))}
-            </ScrollView>
+                    }
+                    onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: false })}
+                />
+            )}
 
             {/* Input Area */}
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-            >
-                <View className="bg-white border-t border-slate-200 px-4 py-3 flex-row items-center gap-3">
-                    <TouchableOpacity className="w-10 h-10 items-center justify-center">
-                        <MaterialIcons name="add" size={28} color={colors.textSecondaryLight} />
-                    </TouchableOpacity>
+            {bookingId && (
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
+                    keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+                >
+                    <View className="bg-white border-t border-slate-200 px-4 py-3 flex-row items-end gap-3">
+                        <View className="flex-1 bg-slate-50 rounded-2xl px-4 py-3 border border-slate-200 min-h-[48px] max-h-[120px] justify-center">
+                            <TextInput
+                                placeholder="Digite sua mensagem..."
+                                placeholderTextColor="#94A3B8"
+                                value={input}
+                                onChangeText={setInput}
+                                className="text-[15px] text-slate-900"
+                                multiline
+                                onSubmitEditing={handleSend}
+                            />
+                        </View>
 
-                    <View className="flex-1 bg-slate-50 rounded-full px-4 py-3 border border-slate-200">
-                        <TextInput
-                            placeholder="Digite sua mensagem..."
-                            placeholderTextColor="#94A3B8"
-                            value={message}
-                            onChangeText={setMessage}
-                            className="text-[15px] text-slate-900"
-                            multiline
-                        />
+                        <TouchableOpacity
+                            onPress={handleSend}
+                            disabled={!input.trim() || sending}
+                            className={`w-12 h-12 rounded-full items-center justify-center shadow-lg ${input.trim() ? "bg-primary shadow-purple-200" : "bg-slate-200"}`}
+                        >
+                            {sending ? (
+                                <ActivityIndicator size="small" color="white" />
+                            ) : (
+                                <MaterialIcons name="send" size={20} color={input.trim() ? "white" : "#94A3B8"} />
+                            )}
+                        </TouchableOpacity>
                     </View>
-
-                    <TouchableOpacity
-                        onPress={handleSend}
-                        className="w-12 h-12 bg-primary rounded-full items-center justify-center shadow-lg shadow-purple-200"
-                    >
-                        <MaterialIcons name="send" size={20} color="white" />
-                    </TouchableOpacity>
-                </View>
-            </KeyboardAvoidingView>
+                </KeyboardAvoidingView>
+            )}
         </SafeAreaView>
     );
 };

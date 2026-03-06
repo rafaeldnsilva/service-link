@@ -3,14 +3,22 @@ import { View, Text, TouchableOpacity, ScrollView, Image, StatusBar } from "reac
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { NavigationProp } from "../../types/navigation";
 import { colors } from "../../theme/colors";
+import { useAuth } from "../../context/AuthContext";
 
 export const ClientProfileScreen: React.FC = () => {
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<NavigationProp>();
+    const { profile, user, signOut } = useAuth();
 
-    React.useEffect(() => {
-        console.log("ClientProfileScreen MOUNTED");
-    }, []);
+    const displayName = profile?.full_name ?? user?.email?.split("@")[0] ?? "Usuário";
+    const displayEmail = user?.email ?? "";
+    const initials = displayName
+        .split(" ")
+        .slice(0, 2)
+        .map((n: string) => n[0])
+        .join("")
+        .toUpperCase();
 
     const MENU_GROUP_1 = [
         {
@@ -55,7 +63,7 @@ export const ClientProfileScreen: React.FC = () => {
             icon: 'settings',
             iconBg: '#F1F5F9',
             iconColor: '#64748B',
-            action: () => console.log('Navigate to Settings')
+            action: () => navigation.navigate('Settings')
         },
     ];
 
@@ -76,11 +84,12 @@ export const ClientProfileScreen: React.FC = () => {
                 {/* Profile Avatar & Name */}
                 <View className="items-center pt-2 pb-4">
                     <View className="relative">
-                        <View className="w-28 h-28 rounded-full bg-[#F5D7C8] items-center justify-center overflow-hidden shadow-lg">
-                            <Image
-                                source={{ uri: "https://i.pravatar.cc/300?img=5" }}
-                                className="w-full h-full"
-                            />
+                        <View className="w-28 h-28 rounded-full bg-primary/20 items-center justify-center overflow-hidden shadow-lg">
+                            {profile?.avatar_url ? (
+                                <Image source={{ uri: profile.avatar_url }} className="w-full h-full" />
+                            ) : (
+                                <Text className="text-primary font-bold text-3xl">{initials}</Text>
+                            )}
                         </View>
                         <TouchableOpacity
                             onPress={() => navigation.navigate('ClientEditProfile')}
@@ -89,8 +98,8 @@ export const ClientProfileScreen: React.FC = () => {
                             <MaterialIcons name="edit" size={16} color="white" />
                         </TouchableOpacity>
                     </View>
-                    <Text className="text-xl font-bold text-slate-900 mt-3">Ana Souza</Text>
-                    <Text className="text-[14px] text-slate-500 mt-0.5">ana.souza@email.com</Text>
+                    <Text className="text-xl font-bold text-slate-900 mt-3">{displayName}</Text>
+                    <Text className="text-[14px] text-slate-500 mt-0.5">{displayEmail}</Text>
                 </View>
 
                 {/* Menu Group 1 */}
@@ -142,7 +151,7 @@ export const ClientProfileScreen: React.FC = () => {
                 {/* Logout Button */}
                 <TouchableOpacity
                     className="flex-row items-center justify-center py-3 mb-4 rounded-2xl border border-red-200"
-                    onPress={() => navigation.navigate("Welcome")}
+                    onPress={async () => { await signOut(); navigation.reset({ index: 0, routes: [{ name: "Auth" }] }); }}
                 >
                     <MaterialIcons name="logout" size={20} color="#EF4444" />
                     <Text className="ml-2 text-red-500 font-bold text-[16px]">Sair</Text>

@@ -6,6 +6,7 @@ import {
     ScrollView,
     KeyboardAvoidingView,
     Platform,
+    Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -13,6 +14,7 @@ import { NavigationProp } from "../../types/navigation";
 import { Button, Input } from "../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { colors } from "../../theme/colors";
+import { supabase } from "../../lib/supabase";
 
 export const LoginScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
@@ -21,12 +23,55 @@ export const LoginScreen: React.FC = () => {
     const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert("Campos obrigatórios", "Por favor, preencha e-mail e senha.");
+            return;
+        }
+
         setLoading(true);
-        // TODO: Implement actual login logic
-        setTimeout(() => {
+        try {
+            const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password,
+            });
+
+            if (error) {
+                Alert.alert("Erro ao entrar", error.message);
+            } else {
+                // Navigation is handled by auth state listener or manual navigation if standard stack
+                // For now, let's navigate manually to Home or let the flow decide
+
+                // Fetch profile to check role
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', (await supabase.auth.getUser()).data.user?.id)
+                    .single();
+
+                if (profile?.role === 'provider') {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: "ProviderMain" }],
+                    });
+                } else if (profile?.role === 'client') {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: "ClientMain" }],
+                    });
+                } else {
+                    // No role or new user? Go to Auth to complete profile
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: "Auth" }],
+                    });
+                }
+            }
+        } catch (e) {
+            Alert.alert("Erro", "Ocorreu um erro inesperado. Tente novamente.");
+            console.error(e);
+        } finally {
             setLoading(false);
-            // navigation.navigate("Home");
-        }, 1000);
+        }
     };
 
     return (

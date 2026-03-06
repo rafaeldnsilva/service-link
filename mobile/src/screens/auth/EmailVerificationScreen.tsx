@@ -1,20 +1,33 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { NavigationProp, RootStackParamList } from "../../types/navigation";
 import { Button } from "../../components";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { colors } from "../../theme/colors";
+import { supabase } from "../../lib/supabase";
 
 export const EmailVerificationScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp>();
     const route = useRoute<RouteProp<RootStackParamList, "EmailVerification">>();
     const email = route.params?.email || "seuemail@dominio.com";
+    const [resending, setResending] = useState(false);
 
-    const handleResendEmail = () => {
-        // TODO: Implement resend email logic
-        console.log("Resending email to:", email);
+    const handleResendEmail = async () => {
+        setResending(true);
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(email);
+            if (error) {
+                Alert.alert("Erro", error.message);
+            } else {
+                Alert.alert("Email reenviado", `Um novo link foi enviado para ${email}.`);
+            }
+        } catch {
+            Alert.alert("Erro", "Não foi possível reenviar. Tente novamente.");
+        } finally {
+            setResending(false);
+        }
     };
 
     return (
@@ -73,9 +86,10 @@ export const EmailVerificationScreen: React.FC = () => {
                     <TouchableOpacity
                         className="py-4 items-center"
                         onPress={handleResendEmail}
+                        disabled={resending}
                     >
-                        <Text className="text-primary text-base font-bold">
-                            Reenviar Email
+                        <Text className={`text-base font-bold ${resending ? "text-slate-400" : "text-primary"}`}>
+                            {resending ? "Reenviando..." : "Reenviar Email"}
                         </Text>
                     </TouchableOpacity>
                 </View>
