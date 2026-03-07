@@ -70,7 +70,7 @@ export const ChatScreen: React.FC = () => {
             });
         });
 
-        return unsubscribe;
+        return () => { void unsubscribe(); };
     }, [bookingId]);
 
     const loadMessages = async () => {

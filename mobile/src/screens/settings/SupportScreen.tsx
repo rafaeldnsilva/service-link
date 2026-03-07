@@ -62,7 +62,7 @@ export const SupportScreen: React.FC = () => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("ChatScreen")}
+                        onPress={() => navigation.navigate("ChatScreen", {})}
                         className="bg-white rounded-2xl p-5 mb-3 active:bg-slate-50"
                     >
                         <View className="flex-row items-center">

@@ -139,7 +139,7 @@ export const ServiceTrackingScreen: React.FC = () => {
                 {/* Action Buttons */}
                 <View className="flex-row gap-3">
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("ChatScreen")}
+                        onPress={() => navigation.navigate("ChatScreen", {})}
                         className="flex-1 bg-blue-500 py-4 rounded-2xl items-center justify-center flex-row shadow-md active:opacity-90"
                     >
                         <MaterialIcons name="phone" size={20} color="white" />
