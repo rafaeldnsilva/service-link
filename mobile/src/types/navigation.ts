@@ -66,7 +66,7 @@ export type RootStackParamList = {
     ProviderProfile: { providerId: string };
     ServiceConfirmation: { serviceId: string; providerId: string; serviceTitle: string; price: number };
     SearchingProvider: { bookingId?: string };
-    ServiceTracking: { bookingId?: string };
+    ServiceTracking: { bookingId?: string; providerId?: string };
 
     // Communication & Review
     ChatScreen: { bookingId?: string; providerId?: string };

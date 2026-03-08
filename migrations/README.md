@@ -10,7 +10,9 @@ migrations/
 ├── 002_seed_data.sql                   # Dados de teste: usuários, serviços, bookings (Sprint 0)
 ├── 003_add_constraints_and_privacy.sql # Trigger de review, campos is_available / coverage_radius_km / push_token (Sprint 0)
 ├── 004_add_messages.sql                # Tabela messages + RLS + Realtime (Sprint 5)
-└── 005_add_payments.sql                # Tabelas payment_methods e payments (Sprint 6)
+├── 005_add_payments.sql                # Tabelas payment_methods e payments (Sprint 6)
+├── 006_add_location_tracking.sql       # Tabela provider_locations + RLS + Realtime (Sprint 7)
+└── 007_add_notifications.sql           # Tabela notifications + trigger automático por evento de booking (Sprint 7)
 ```
 
 ## O que cada migration adiciona
@@ -22,6 +24,8 @@ migrations/
 | `003` | Trigger que bloqueia review em booking não-`completed`; `UNIQUE` por booking em reviews; colunas `is_available`, `coverage_radius_km`, `push_token` em `profiles` |
 | `004` | Tabela `messages` com RLS (apenas client/provider do booking), índices, instruções de Realtime |
 | `005` | Tabela `payment_methods` (cartões mascarados por usuário, unique default por user); tabela `payments` (status, gateway, referência) |
+| `006` | Tabela `provider_locations` (upsert por provider_id), RLS, índice lat/lng, instruções de Realtime |
+| `007` | Tabela `notifications` com índices de não lidas; trigger `trg_booking_notifications` que cria notificações automáticas em cada mudança de status do booking |
 
 ## Diferenças: Local vs. Supabase Cloud
 
@@ -51,7 +55,9 @@ psql -U postgres -d servicelink \
   -f migrations/002_seed_data.sql \
   -f migrations/003_add_constraints_and_privacy.sql \
   -f migrations/004_add_messages.sql \
-  -f migrations/005_add_payments.sql
+  -f migrations/005_add_payments.sql \
+  -f migrations/006_add_location_tracking.sql \
+  -f migrations/007_add_notifications.sql
 ```
 
 ## Contas de teste (após seed)
@@ -65,7 +71,6 @@ psql -U postgres -d servicelink \
 
 Siga a convenção de numeração sequencial a partir do **007**:
 
-- `006_add_location_tracking.sql` — tabela `provider_locations` (Sprint 7)
-- `007_add_push_notifications.sql` — tabela/trigger de push notifications (Sprint 7)
+- `008_...sql` — próxima migration (Sprint 8+)
 
 Cada arquivo deve ser idempotente: use `IF NOT EXISTS`, `ON CONFLICT DO NOTHING`, `CREATE OR REPLACE`.

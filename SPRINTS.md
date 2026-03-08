@@ -296,33 +296,16 @@ Opções recomendadas para Brasil:
 
 ### Banco de Dados
 
-- [ ] **PAG-01** Criar `005_add_payments.sql`:
-  ```sql
-  CREATE TABLE payments (
-    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    booking_id      UUID NOT NULL REFERENCES bookings(id),
-    amount          DECIMAL(10,2) NOT NULL,
-    currency        TEXT DEFAULT 'BRL',
-    status          TEXT NOT NULL, -- pending, paid, refunded, failed
-    gateway         TEXT NOT NULL, -- stripe, pagarme
-    gateway_ref     TEXT,          -- ID da transação no gateway
-    paid_at         TIMESTAMPTZ,
-    created_at      TIMESTAMPTZ DEFAULT NOW()
-  );
-  ```
+- [x] **PAG-01** `005_add_payments.sql` — tabelas `payment_methods` e `payments`, RLS comentado para Cloud
 
 ### Implementação
 
-- [ ] **PAG-02** Configurar chaves do gateway no `.env` (`EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY` ou equivalente)
-- [ ] **PAG-03** `PaymentMethodsScreen` — sair do stub, implementar:
-  - Listar cartões salvos do usuário
-  - Adicionar novo cartão
-  - Definir cartão padrão
-  - Remover cartão
-- [ ] **PAG-04** `AddCardScreen` — implementar formulário de cartão com validação (Luhn) e tokenização via SDK do gateway
-- [ ] **PAG-05** `ServiceConfirmationScreen` — adicionar seleção de método de pagamento antes de confirmar booking
-- [ ] **PAG-06** Implementar cobrança automática ao confirmar o booking (ou ao concluir, dependendo da regra de negócio)
-- [ ] **PAG-07** Implementar lógica de split de pagamento (taxa da plataforma vs. valor do prestador)
+- [x] **PAG-02** Gateway simulado (gateway=`simulated`). Chaves reais (`EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY`) ficam para integração com gateway real pós-MVP
+- [x] **PAG-03** `PaymentMethodsScreen` — lista cartões do Supabase, define padrão, remove com confirmação
+- [x] **PAG-04** `AddCardScreen` — formulário com validação Luhn, detecção de bandeira, persistência no Supabase (apenas dados mascarados: last4, tipo, validade)
+- [x] **PAG-05** `ServiceConfirmationScreen` — exibe método padrão, link para AddCard/PaymentMethods
+- [x] **PAG-06** `paymentService.createPayment()` chamado em `handleConfirm` após criar booking
+- [ ] **PAG-07** Split de pagamento (taxa plataforma vs. prestador) — requer gateway real, pós-MVP
 
 **Entregável**: Usuário consegue pagar por um serviço com cartão de crédito/débito ou Pix.
 
@@ -335,33 +318,22 @@ Opções recomendadas para Brasil:
 
 ### Push Notifications
 
-- [ ] **NOTIF-01** Instalar e configurar `expo-notifications`:
-  ```bash
-  cd mobile && npx expo install expo-notifications expo-device
-  ```
-- [ ] **NOTIF-02** Criar `src/services/notificationService.ts`:
-  - `registerForPushNotifications()` — solicitar permissão e obter token
-  - Salvar token no perfil do usuário na DB
-- [ ] **NOTIF-03** Criar `006_add_push_tokens.sql` — campo `push_token` na tabela `profiles`
-- [ ] **NOTIF-04** `NotificationsScreen` — sair do stub, listar notificações reais do usuário:
-  - Booking aceito pelo prestador
-  - Prestador a caminho
-  - Serviço concluído
-  - Nova mensagem no chat
-  - Novo pedido de serviço (para prestador)
+- [x] **NOTIF-01** `expo-notifications` e `expo-device` já instalados (`~0.32.16` / `~8.0.10`)
+- [x] **NOTIF-02** `src/services/notificationService.ts` — `registerPushToken`, `getNotifications`, `markAsRead`, `markAllAsRead`, `subscribeToNotifications` (Realtime), `getUnreadCount`
+- [x] **NOTIF-03** Campo `push_token` já adicionado em `003_add_constraints_and_privacy.sql` (Sprint 0)
+- [x] **NOTIF-04** `NotificationsScreen` — dados reais do Supabase, Realtime subscription, mark-as-read por toque, "Lidas" marca todas, empty state, `timeAgo` em pt-BR, ícone e cor por tipo
 
 ### Triggering de Notificações
 
-As notificações devem ser disparadas por **Supabase Edge Functions** (ou webhook) para não depender do app estar aberto:
-- [ ] **NOTIF-05** Criar Edge Function `send-push-notification` no Supabase
-- [ ] **NOTIF-06** Configurar triggers de DB para chamar a Edge Function nos eventos relevantes
+- [ ] **NOTIF-05** Edge Function `send-push-notification` — envia push via Expo Push API quando app está fechado (requer Supabase CLI + deploy)
+- [ ] **NOTIF-06** Trigger de DB chamando Edge Function nos eventos de booking — estrutura SQL criada em `007_add_notifications.sql`, deploy pendente
 
 ### Localização em Tempo Real
 
-- [ ] **LOC-01** Criar `007_add_location_tracking.sql` — tabela `provider_locations(provider_id, lat, lng, updated_at)`
-- [ ] **LOC-02** `ProviderMainScreen` — quando online, publicar localização a cada 30s via `expo-location` background
-- [ ] **LOC-03** `ServiceTrackingScreen` — subscrever Supabase Realtime na tabela `provider_locations` para mover o marker do mapa em tempo real
-- [ ] **LOC-04** Implementar lógica de matching por proximidade no `SearchingProviderScreen` — buscar prestadores com `role=provider` e `is_available=true` ordenados por distância
+- [x] **LOC-01** `migrations/006_add_location_tracking.sql` — tabela `provider_locations(provider_id PK, latitude, longitude, updated_at)` + RLS + Realtime
+- [x] **LOC-02** `ProviderMainScreen` — quando online, publica localização via `supabase.upsert()` a cada 30s (intervalo + cleanup)
+- [x] **LOC-03** `ServiceTrackingScreen` — busca posição inicial + Realtime subscription em `provider_locations`, move marker via `mapRef.fitToCoordinates()`, exibe dados reais do booking (provider name, service)
+- [x] **LOC-04** `SearchingProviderScreen` — bounding-box query em `provider_locations`, markers de prestadores disponíveis no mapa; Realtime em booking status (navega ao aceitar, cancela ao rejeitar, timeout de 2min)
 
 **Entregável**: Usuário recebe push notifications em todos os eventos do fluxo. Cliente acompanha prestador no mapa em tempo real.
 

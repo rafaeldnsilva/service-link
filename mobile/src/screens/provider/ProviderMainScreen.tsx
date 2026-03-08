@@ -7,6 +7,7 @@ import * as Location from "expo-location";
 import { NavigationProp } from "../../types/navigation";
 import { useAuth } from "../../context/AuthContext";
 import { bookingService } from "../../services/supabaseService";
+import { supabase } from "../../lib/supabase";
 import { Database } from "../../types/supabase";
 
 type Booking = Database["public"]["Tables"]["bookings"]["Row"] & {
@@ -45,6 +46,27 @@ export const ProviderMainScreen: React.FC = () => {
             });
         })();
     }, []);
+
+    // LOC-02: Publish location every 30s when online
+    useEffect(() => {
+        if (!user || !isOnline) return;
+
+        const publish = async () => {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== "granted") return;
+            const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+            await supabase.from("provider_locations").upsert({
+                provider_id: user.id,
+                latitude: loc.coords.latitude,
+                longitude: loc.coords.longitude,
+                updated_at: new Date().toISOString(),
+            });
+        };
+
+        publish();
+        const interval = setInterval(publish, 30_000);
+        return () => clearInterval(interval);
+    }, [user, isOnline]);
 
     useEffect(() => {
         if (user && isOnline) {
