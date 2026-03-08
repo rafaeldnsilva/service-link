@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ClientTabParamList } from "../types/navigation";
+import { useAuth } from "../context/AuthContext";
+import { messageService } from "../services/messageService";
 
 import { ClientHomeScreen } from "../screens/client/ClientHomeScreen";
 import { ClientAllServicesScreen } from "../screens/client/ClientAllServicesScreen";
@@ -43,6 +45,19 @@ const TAB_CONFIG: Record<
 };
 
 export const ClientTabNavigator: React.FC = () => {
+    const { user } = useAuth();
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        if (!user) return;
+        const fetch = () => {
+            messageService.getUnreadCount(user.id).then(setUnreadCount).catch(() => {});
+        };
+        fetch();
+        const interval = setInterval(fetch, 30_000);
+        return () => clearInterval(interval);
+    }, [user]);
+
     return (
         <Tab.Navigator
             initialRouteName="Home"
@@ -82,7 +97,11 @@ export const ClientTabNavigator: React.FC = () => {
         >
             <Tab.Screen name="Home" component={ClientHomeScreen} />
             <Tab.Screen name="Services" component={ClientAllServicesScreen} />
-            <Tab.Screen name="History" component={ClientHistoryScreen} />
+            <Tab.Screen
+                name="History"
+                component={ClientHistoryScreen}
+                options={{ tabBarBadge: unreadCount > 0 ? unreadCount : undefined }}
+            />
             <Tab.Screen name="Profile" component={ClientProfileScreen} />
         </Tab.Navigator>
     );

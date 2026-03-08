@@ -1,5 +1,5 @@
 -- ============================================================
--- 005_add_messages.sql
+-- 004_add_messages.sql
 -- Real-time chat between client and provider per booking
 -- ============================================================
 

@@ -191,8 +191,7 @@ cd mobile && npx expo install expo-image-picker expo-constants
 
 ### Confirmação de Serviço
 
-- [x] **SERV-06** `ServiceConfirmationScreen` — lê `serviceTitle` e `price` dos params de navegação
-  - *TODO*: Seletor de data/hora e criação real de booking via `bookingService.createBooking()`
+- [x] **SERV-06** `ServiceConfirmationScreen` — seletor de data/hora (DateTimePicker) + criação real de booking via `bookingService.createBooking()` com `scheduled_at` escolhido pelo usuário
 
 ### Busca de Prestador
 
@@ -261,7 +260,7 @@ cd mobile && npx expo install expo-location @react-native-community/datetimepick
 
 ### Banco de Dados
 
-- [x] **CHAT-01** `migrations/005_add_messages.sql` — tabela `messages` com RLS (client e provider do booking), indexes, Realtime instructions
+- [x] **CHAT-01** `migrations/004_add_messages.sql` — tabela `messages` com RLS (client e provider do booking), indexes, Realtime instructions
 
 ### Service Layer
 
@@ -275,7 +274,7 @@ cd mobile && npx expo install expo-location @react-native-community/datetimepick
 ### Interface
 
 - [x] **CHAT-03** `ChatScreen` — FlatList com bolhas sent/received, Realtime subscription, loading state, input com send desabilitado quando vazio
-- [ ] **CHAT-04** Adicionar badge de mensagens não lidas no ícone de chat da TabBar
+- [x] **CHAT-04** Adicionar badge de mensagens não lidas no ícone de chat da TabBar
 
 **Entregável**: Chat funcional e em tempo real entre cliente e prestador vinculado ao booking.
 
@@ -297,7 +296,7 @@ Opções recomendadas para Brasil:
 
 ### Banco de Dados
 
-- [ ] **PAG-01** Criar `006_add_payments.sql`:
+- [ ] **PAG-01** Criar `005_add_payments.sql`:
   ```sql
   CREATE TABLE payments (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),

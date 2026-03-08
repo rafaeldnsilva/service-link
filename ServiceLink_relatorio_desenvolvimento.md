@@ -1018,12 +1018,15 @@ Prioridade 3 (preparação para produção):
 
 Resumo Final
 
-O projeto evoluiu além do diagnóstico anterior de 35% e já tem ganhos concretos em integração e organização de banco local. Ainda assim, o núcleo de operação do marketplace permanece parcialmente simulado. A direção técnica está correta: desenvolver localmente com PostgreSQL agora e migrar para Supabase na etapa de produção.
+O projeto evoluiu além do diagnóstico anterior de 35% e já tem ganhos concretos em integração e organização de banco local.
+Ainda assim, o núcleo de operação do marketplace permanece parcialmente simulado. A direção técnica está correta: desenvolver localmente com PostgreSQL
+agora e migrar para Supabase na etapa de produção.
 
 
   ● Zero erros. Sprint 0 concluída. Aqui está o resumo completo do que foi entregue:              
                                                                                                 
-  ---                                                                                             Sprint 0 — Concluída ✅
+  ---
+  Sprint 0 — Concluída ✅
                                                                                                 
   Banco de Dados                                                                                
 
@@ -1194,7 +1197,7 @@ O projeto evoluiu além do diagnóstico anterior de 35% e já tem ganhos concret
 
   Sprint 5 — Chat ✅
 
-  - migrations/005_add_messages.sql — messages table with full RLS (only booking participants   
+  - migrations/004_add_messages.sql — messages table with full RLS (only booking participants   
   can read/write)
   - src/services/messageService.ts — getMessages, sendMessage, subscribeToMessages (Supabase    
   Realtime), markAsRead, getUnreadCount
@@ -1203,3 +1206,195 @@ O projeto evoluiu além do diagnóstico anterior de 35% e já tem ganhos concret
 
   Remaining: CHAT-04 (unread badge), full booking creation flow in ServiceConfirmation, Sprints 
   6-8 (Payments, Push Notifications, QA).
+  
+  ● Commit criado com sucesso: 81 arquivos, 15.349 inserções, 2.719 remoções.
+                                                                                                  0611637 feat: implement Sprints 0-5 — full client/provider flow + real-time chat                 
+  O commit cobre tudo que foi implementado:                                                     
+  - Sprint 0 — Segurança (env vars, .gitignore, ESLint/Prettier, migrations SQL)                
+  - Sprint 1 — Navegação (AuthNavigator, ClientTabNavigator, ProviderTabNavigator) + Zustand +  
+  React Query
+  - Sprint 2 — Auth completo (recuperação de senha, força de senha, upload de avatar, perfil)   
+  - Sprint 3 — Fluxo cliente (ProviderProfile c/ dados reais, RateProvider conectado,
+  ClientHistory com cancelar/avaliar)
+  - Sprint 4 — Fluxo prestador (ProviderMain dinâmico, CRUD de serviços, AvailabilityConfig,    
+  DocumentVerification)
+  - Sprint 5 — Chat em tempo real (migration 005_add_messages.sql, messageService.ts com        
+  Supabase Realtime, ChatScreen reescrito)
+  
+  ● Faltam 3 sprints:                                                                             
+                                                                                                
+  ┌────────┬─────────────────────────────────────────────────────────────┬──────────────────┐   
+  │ Sprint │                         O que falta                         │    Prioridade    │     ├────────┼─────────────────────────────────────────────────────────────┼──────────────────┤   
+  │ Sprint │ Pagamentos (Stripe/Pagar.me/MercadoPago — PAG-01 a PAG-07)  │ Alta             │   
+  │  6     │                                                             │                  │ 
+  ├────────┼─────────────────────────────────────────────────────────────┼──────────────────┤
+  │ Sprint │ Push notifications (expo-notifications + Supabase Edge      │ Média-Alta       │   
+  │  7     │ Functions) + Localização em tempo real do prestador no mapa │                  │   
+  ├────────┼─────────────────────────────────────────────────────────────┼──────────────────┤   
+  │ Sprint │ Testes automatizados (Jest), CI/CD (GitHub Actions),        │ Alta (requisito  │   
+  │  8     │ paginação, skeleton loaders, UX polish, preparação para App │ para produção)   │   
+  │        │  Store/Play Store                                           │                  │   
+  └────────┴─────────────────────────────────────────────────────────────┴──────────────────┘   
+
+  Também sobrou um item pequeno do Sprint 5:
+  - CHAT-04 — Badge de mensagens não lidas no ícone da TabBar
+
+  E um do Sprint 3:
+  - SERV-06 — Seletor de data/hora + criação real de booking via bookingService.createBooking() 
+  na ServiceConfirmationScreen
+
+  ---
+  
+  ● Sprint 6 committed. Now Sprint 7 — Push Notifications & Location. Let me read the tasks:      
+  
+  The Sprint 7 tasks are:
+  - NOTIF-01/02: expo-notifications + notificationService.ts                                    
+  - NOTIF-03: push_token column (already in 003 migration per the SPRINTS.md)
+  - NOTIF-04: NotificationsScreen — real notification list
+  - NOTIF-05/06: Supabase Edge Function for sending push
+  - LOC-01: 007_add_location_tracking.sql
+  - LOC-02: Provider publishes location every 30s
+  - LOC-03: ServiceTrackingScreen subscribes to provider location via Realtime
+  - LOC-04: Matching by proximity in SearchingProviderScreen                                                                                                                                      Let me check what's already done:                                                                                                                                                             ● Bash(cd "C:/Users/rafae/Downloads/Repositorio_Local/service-link/mobile" && cat package.json |       grep -E "expo-notifications|expo-location|expo-device")                                  
+  ⎿      "expo-location": "~19.0.8",                                                                                                                                                            
+
+● Read 1 file (ctrl+o to expand)                                                                
+                                                                                                
+● ★ Insight ─────────────────────────────────────                                               
+  For Sprint 7, push notifications need two channels: (1) in-app notifications stored in a DB   
+  table (queryable, persistent), and (2) expo push tokens stored in profiles (for when the app  
+  is closed). The Edge Function approach keeps push sending server-side so it works even when
+  the app is closed — this is the only production-correct approach. We'll implement both the DB 
+  layer and the Expo token registration, plus the location tracking.
+  ─────────────────────────────────────────────────
+  
+  ●
+  ---                                                                                           
+  Ambos os itens concluídos:                                                                    
+  CHAT-04 — Badge de não lidas (ClientTabNavigator.tsx)                                         
+                                                                                                
+  - Hook useEffect dentro do navigator faz polling a cada 30s chamando
+  messageService.getUnreadCount(user.id)
+  - tabBarBadge: unreadCount > 0 ? unreadCount : undefined — passa undefined quando zero para o 
+  badge sumir automaticamente (comportamento nativo do React Navigation)
+
+  SERV-06 — Seletor de data/hora (ServiceConfirmationScreen.tsx)
+
+  - Estado scheduledAt (Date) inicializado com agora + 15 min (valor padrão seguro)
+  - pickerMode: "date" | "time" | null controla qual picker está visível
+  - No Android: abre date picker → ao confirmar, encadeia automaticamente para time picker →    
+  fecha
+  - No iOS: usa display="spinner" (único picker que cobre ambos os modos)
+  - minimumDate={minDate} impede agendamento no passado
+  - Data escolhida exibida formatada em pt-BR na linha clicável do bottom sheet
+  - handleConfirm passa scheduledAt.toISOString() para bookingService.createBooking()
+
+  ★ Insight ─────────────────────────────────────
+  O polling de 30s é uma solução pragmática para o badge: simples, sem estado global extra. A   
+  alternativa seria Supabase Realtime também no navigator, mas criaria um canal aberto
+  permanentemente para toda a sessão — overhead desnecessário para um badge. Para o
+  DateTimePicker, o encadeamento date→time é necessário apenas no Android porque o componente   
+  não suporta mode="datetime" nativamente nessa plataforma.
+  ─────────────────────────────────────────────────
+  
+   ---                                                                                           
+  Por que não existe 004?                                                                          
+  Resposta curta: A numeração foi planejada em uma ordem, mas executada em outra. O slot 004    
+  ficou "reservado" por intenção e depois foi pulado por acidente.
+
+  ---
+  A prova está no README.md
+
+  O README.md da pasta, escrito cedo no projeto, mostrava o plano futuro assim:
+
+  ## Adicionando novas migrations
+  - `003_add_messages_table.sql`
+  - `004_add_payment_methods.sql`
+
+  O desenvolvedor planejou que mensagens seriam a 003 e pagamentos seriam a 004.
+
+  ---
+  O que realmente aconteceu
+
+  ┌─────┬─────────────────────┬─────────────────────────────┬────────────────────────────────┐  
+  │  #  │ Planejado no README │  O que foi criado de fato   │             Sprint             │  
+  ├─────┼─────────────────────┼─────────────────────────────┼────────────────────────────────┤  
+  │ 001 │ schema              │ 001_create_schema.sql       │ Base                           │  
+  ├─────┼─────────────────────┼─────────────────────────────┼────────────────────────────────┤  
+  │ 002 │ seed                │ 002_seed_data.sql           │ Base                           │  
+  ├─────┼─────────────────────┼─────────────────────────────┼────────────────────────────────┤  
+  │ 003 │ add_messages_table  │ add_constraints_and_privacy │ Sprint 0 (não planejado no     │  
+  │     │                     │                             │ README)                        │  
+  ├─────┼─────────────────────┼─────────────────────────────┼────────────────────────────────┤  
+  │ 004 │ add_payment_methods │ nunca criado                │ —                              │  
+  ├─────┼─────────────────────┼─────────────────────────────┼────────────────────────────────┤  
+  │ 005 │ —                   │ add_messages                │ Sprint 5                       │  
+  ├─────┼─────────────────────┼─────────────────────────────┼────────────────────────────────┤  
+  │ 006 │ —                   │ add_payments                │ Sprint 6                       │  
+  └─────┴─────────────────────┴─────────────────────────────┴────────────────────────────────┘  
+
+  O Sprint 0 foi o culpado do desalinhamento: ele introduziu uma migration não prevista no      
+  README (003_add_constraints_and_privacy), que ocupou o slot que estava reservado
+  conceitualmente para mensagens.
+
+  ---
+  A sequência de erros
+
+  1. README escrito → plano: mensagens=003, pagamentos=004
+  2. Sprint 0 executado → 003_add_constraints_and_privacy.sql criada (desconhecida do README)   
+  3. Sprint 5 implementado → mensagens criadas originalmente como 005 (pulando 004 por acidente)
+  4. Sprint 6 implementado → pagamentos criados como 006 (também fora de sequência)
+  5. Correção aplicada: arquivos renumerados para 004_add_messages e 005_add_payments,
+  eliminando o ghost slot e tornando a sequência contígua.
+
+  ---
+  Consequência prática
+
+  O 004 é um "ghost slot" — nunca existiu, nunca será preenchido. Não causa nenhum problema     
+  técnico (migrations SQL não precisam ser contíguas), mas:
+
+  - Confunde quem lê a pasta e tenta entender a história do banco
+  - O README.md está desatualizado e menciona um plano que não reflete a realidade
+  - O SPRINTS.md também tem uma inconsistência relacionada: Sprint 7 planeja criar
+  006_add_push_tokens.sql, mas o slot 006 já foi usado por pagamentos — e o campo push_token já 
+  foi adicionado na 003 (linha 70 do arquivo)
+
+  ★ Insight ─────────────────────────────────────
+  Esse tipo de gap de numeração é um sintoma clássico de documentação que não acompanha a       
+  implementação. Em projetos com Supabase ou ferramentas de migration como Flyway/Liquibase, o  
+  número da migration é crítico — a ferramenta pode rejeitar execução se houver gaps. Neste     
+  projeto as migrations são aplicadas manualmente via psql, então o gap não quebra nada
+  funcionalmente, mas é uma dívida de documentação.
+  ─────────────────────────────────────────────────
+  
+  ● Nenhuma referência antiga restante. Resumo do que foi feito:                                    
+  ---                                                                                             Mudanças realizadas
+                                                                                                
+  ┌──────────────────────────────────────────┬───────────────────────────────────────────────┐
+  │                   Ação                   │                    Detalhe                    │
+  ├──────────────────────────────────────────┼───────────────────────────────────────────────┤  
+  │ mv arquivo                               │ 005_add_messages.sql → 004_add_messages.sql   │  
+  ├──────────────────────────────────────────┼───────────────────────────────────────────────┤  
+  │ mv arquivo                               │ 006_add_payments.sql → 005_add_payments.sql   │  
+  ├──────────────────────────────────────────┼───────────────────────────────────────────────┤  
+  │ Comentário interno                       │ Linha 2 do 004_add_messages.sql atualizada    │  
+  ├──────────────────────────────────────────┼───────────────────────────────────────────────┤  
+  │                                          │ Estrutura, tabela de conteúdo e comando psql  │  
+  │ migrations/README.md                     │ atualizados. Próxima migration apontada como  │  
+  │                                          │ 006                                           │  
+  ├──────────────────────────────────────────┼───────────────────────────────────────────────┤  
+  │ SPRINTS.md                               │ CHAT-01 e PAG-01 atualizados                  │  
+  ├──────────────────────────────────────────┼───────────────────────────────────────────────┤  
+  │ ServiceLink_relatorio_desenvolvimento.md │ Todas as ocorrências substituídas + nota      │  
+  │                                          │ histórica corrigida                           │  
+  └──────────────────────────────────────────┴───────────────────────────────────────────────┘  
+
+  A pasta agora tem sequência 001 → 002 → 003 → 004 → 005, sem gaps, sem necessidade de ler     
+  documentação para entender que "falta um arquivo".
+
+  ★ Insight ─────────────────────────────────────
+  Renumerar migrations é seguro enquanto o banco ainda não está em produção. Em produção,       
+  ferramentas como Flyway e Liquibase registram o checksum e o número de cada migration já      
+  executada — renumerar quebraria o histórico. Para o estágio atual do projeto (dev local +     
+  Supabase aplicado manualmente), a renumeração é a decisão correta e não tem custo.
+  ─────────────────────────────────────────────────

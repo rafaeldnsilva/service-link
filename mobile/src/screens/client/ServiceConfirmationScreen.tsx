@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Dimensions, ActivityIndicator, Alert } from "react-native";
+import { View, Text, TouchableOpacity, Dimensions, ActivityIndicator, Alert, Platform } from "react-native";
+import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
@@ -39,6 +40,10 @@ export const ServiceConfirmationScreen: React.FC = () => {
     const [loadingPayment, setLoadingPayment] = useState(true);
     const [confirming, setConfirming] = useState(false);
 
+    const minDate = new Date(Date.now() + 15 * 60 * 1000);
+    const [scheduledAt, setScheduledAt] = useState<Date>(minDate);
+    const [pickerMode, setPickerMode] = useState<"date" | "time" | null>(null);
+
     useEffect(() => {
         if (!user) return;
         paymentService.getDefaultMethod(user.id)
@@ -47,18 +52,46 @@ export const ServiceConfirmationScreen: React.FC = () => {
             .finally(() => setLoadingPayment(false));
     }, [user]);
 
+    const handleDateChange = (event: DateTimePickerEvent, selected?: Date) => {
+        if (event.type === "dismissed") {
+            setPickerMode(null);
+            return;
+        }
+        if (!selected) return;
+
+        if (pickerMode === "date") {
+            const updated = new Date(scheduledAt);
+            updated.setFullYear(selected.getFullYear(), selected.getMonth(), selected.getDate());
+            setScheduledAt(updated);
+            // On Android chain to time picker; on iOS the single picker handles both
+            setPickerMode(Platform.OS === "android" ? "time" : null);
+        } else {
+            const updated = new Date(scheduledAt);
+            updated.setHours(selected.getHours(), selected.getMinutes(), 0, 0);
+            setScheduledAt(updated);
+            setPickerMode(null);
+        }
+    };
+
+    const formatScheduledAt = (date: Date) =>
+        date.toLocaleString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
+
     const handleConfirm = async () => {
         if (!user) return;
 
         setConfirming(true);
         try {
-            // Create the booking (scheduled_at defaults to ASAP — now + 15 min)
-            const scheduledAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
             const booking = await bookingService.createBooking({
                 client_id: user.id,
                 service_id: serviceId,
                 provider_id: providerId,
-                scheduled_at: scheduledAt,
+                scheduled_at: scheduledAt.toISOString(),
                 total_amount: price,
             });
 
@@ -119,12 +152,22 @@ export const ServiceConfirmationScreen: React.FC = () => {
 
                 {/* Info Items */}
                 <View className="mb-6 gap-3">
-                    <View className="flex-row items-center">
+                    <TouchableOpacity
+                        className="flex-row items-center"
+                        onPress={() => setPickerMode("date")}
+                        activeOpacity={0.7}
+                    >
                         <View className="w-10 h-10 rounded-full bg-slate-900 items-center justify-center">
-                            <MaterialIcons name="access-time" size={20} color="white" />
+                            <MaterialIcons name="calendar-today" size={20} color="white" />
                         </View>
-                        <Text className="ml-3 text-[15px] text-slate-700">Chegada em ~15 min</Text>
-                    </View>
+                        <View className="ml-3 flex-1">
+                            <Text className="text-[13px] text-slate-400">Data e hora agendada</Text>
+                            <Text className="text-[15px] font-semibold text-slate-800">
+                                {formatScheduledAt(scheduledAt)}
+                            </Text>
+                        </View>
+                        <MaterialIcons name="chevron-right" size={20} color="#94A3B8" />
+                    </TouchableOpacity>
 
                     <View className="flex-row items-center justify-between">
                         <View className="flex-row items-center flex-1">
@@ -170,6 +213,16 @@ export const ServiceConfirmationScreen: React.FC = () => {
                     <Text className="text-[13px] text-slate-600">Profissionais verificados</Text>
                 </View>
             </View>
+
+            {pickerMode !== null && (
+                <DateTimePicker
+                    value={scheduledAt}
+                    mode={pickerMode}
+                    display={Platform.OS === "ios" ? "spinner" : "default"}
+                    minimumDate={minDate}
+                    onChange={handleDateChange}
+                />
+            )}
         </View>
     );
 };
